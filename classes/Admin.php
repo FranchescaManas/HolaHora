@@ -4,6 +4,8 @@ require_once "Database.php";
 
 class Admin extends Database {
 
+
+    
     public function create_employee($request){
         // print_r($request);
         $username = $request['username'];
@@ -33,6 +35,8 @@ class Admin extends Database {
             die("Error Registering Employee: " . $this->conn->error);
         }
     }
+
+    // function 2.. etc etc
     public function create_manager($request) {
         // Extract and sanitize input
         $username = $request['username'];
@@ -157,6 +161,21 @@ class Admin extends Database {
             die("Error deleting team: " . $this->conn->error);
         }
     }
+
+    public function create_activity($request){
+        $activity_name = $request['activity_name'];
+        $sql = "INSERT INTO activities (`activity_name`, `isBillable`, `Status`) VALUES ('$activity_name', 1, 'Active')";
+        
+        if($this->conn->query($sql)){
+            header("location: ../../views/shared/dashboard.php");
+            exit;
+        } else{
+            die("Error creating activity: " . $this->conn->error);
+        }
+
+    }
+
+
 }
 
 ?>

@@ -47,6 +47,7 @@ class User extends Database {
     }
 
     public function logout(){
+        session_start();
         $user_id = $_SESSION['user_id'];
         $sql = "UPDATE `users` SET `online` = 1 WHERE `user_id` = $user_id";
 
@@ -56,13 +57,36 @@ class User extends Database {
             session_abort();
             session_destroy();
             
-            header('Location: ../../views/employee/activity.php');
+            header('Location: ../../views/');
             exit;
         }else{
             die("Error setting user status to online. " . $this->conn->error);
         }
     }
 
+    public function get_profile(){
+        $user_id = $_SESSION['user_id'];
+        $sql = "SELECT * FROM users WHERE `user_id` = $user_id";
+
+        if($result = $this->conn->query($sql)){
+            return $result->fetch_assoc();
+        }else{
+            die("Error retreiving user details. ". $this->conn->error);
+        }
+        
+        
+    }
+
+    public function get_activity(){
+        $sql = "SELECT * FROM activities";
+
+        if($result = $this->conn->query($sql)){
+            return $result;
+        }else{
+            die("Error retrieving activities table: " . $this->conn->error);
+        }
+
+    }
    
 }
 

@@ -1,0 +1,37 @@
+hey hey 
+
+OVERVIEW: 
+    Name of system: Hola - Hora
+    Description: Time tracking system that logs the employees activities including their time. Managers will have access to viewing their activities and has dashboard. 
+    Users: 
+    Employee - can only log activities (e.g break, production, meeting, etc)
+    Manager - can manage employees under their supervision. 
+    Admin - assigns employees to managers/team, can create departments, view overall activities
+
+
+
+look at my folders first
+
+actions >> this is when you know php na.. this is where my forms from specific pages will lead to for processing the data, it calls the functions from a class.
+        >> there are different folders inside. I separate the files per user: Employee, Manager, Admin
+
+assets >> This is where i store the css and images
+
+classes >> This is where i store all my user functionalites and is also separated per user
+        >> User class is where i store functions that are applicable for all users like login or logout
+        >> Database is a parent class, it stores my connection to my database. I use MySQL
+        >> Admin is a class where i store all my function specific for admin uses like CreateEmployee() as admins are the only ones who have access to creating employees
+        >> Manager same lng, a class where i store functions only specific for manager functionalities
+        >> Employee, ganon lng din specific sa employee functions.
+
+    NOTE:
+        >> Everything here in the classes are all backend, nothing here has .html files
+        >> All classes are children of the Database class para rekta connection na
+
+
+views >> this are where all my front-end designs are. They're all separated din per users. admin folder - pages specific for admins, employee - same lng, manager - same lng din
+      >> shared folder - pages that can be reused for other users and are sometimes
+      what
+      mmmmm medyo baliktad if i go to another page, nakikita mo ba?
+      
+      

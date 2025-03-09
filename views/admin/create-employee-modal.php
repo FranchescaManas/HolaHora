@@ -6,6 +6,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+       
         <form method="post" action="../../actions/admin/create-employee.php">
           <div class="row">
             <div class="col">
@@ -39,8 +40,8 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="manager" class="form-label">Team:</label>
-                    <select name="manager" id="" class="form-select">
+                    <label for="team" class="form-label">Team:</label>
+                    <select name="team" id="" class="form-select">
                         <option value="1">Team</option>
                     </select>
                 </div>

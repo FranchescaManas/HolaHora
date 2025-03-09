@@ -1,9 +1,4 @@
-<?php
-include "view-remark-modal.php";
 
-// TODO: convert to session variable when backend is ready
-$role = "Admin";
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +11,8 @@ $role = "Admin";
 <body style="height: 100vh; border: 1px solid red">
 <?php 
 include '../shared/main-nav.php';
-
+include "view-remark-modal.php";
+$role = $_SESSION['role'];
 ?>
 
 <div class="container-fluid w-75 px-3 border border-1 " style="height:80vh">
