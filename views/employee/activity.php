@@ -6,12 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/style.css">
     <title>Activity Tracker</title>
 </head>
 <body>
 <?php 
 include '../../classes/User.php';
+include '../../classes/Employee.php';
 include '../shared/main-nav.php';
 include '../shared/view-remark-modal.php';
 
@@ -29,39 +30,42 @@ $user = new User;
             <div class="card-body">
                 <div class="row justify-content-evenly">
                     <div class="col-4 px-0 py-4">
-                        <div class="container border border-1">
-                            <p id="currentTime" class="display-6 text-center">--:--</p>
-                        </div>
-                        <form action="" method="post" class="d-flex flex-column " style="height:57vh">
+                        <form action="../../actions/employee/shift-activity.php" method="post" onsubmit="set_time_activity()">
+                            <div class="container border border-1">
+                                <p id="currentTime" class="display-6 text-center">--:--</p>
+                            </div>
+                            <div class="d-flex flex-column " style="height:57vh">
                             <?php
                             $activities = $user->get_activity();
                             
                             
                             ?>
-                            <div class="align-items-start">
-                                <select name="activity" id="activitySelect" class="form-select w-100 my-3">
-                                    <option value="" hidden>Select Current Activity</option>
-                                    <?php while ($activity = $activities->fetch_assoc()) { ?>
-                                        <option value="<?= $activity['activity_id'] ?>"><?= $activity['activity_name'] ?></option>
-                                    <?php } ?>
-                                </select>
-                                <button type="submit" class="form-control btn btn-primary mb-2">Update Activity</button>
-                            </div>
+                                <div class="align-items-start">
 
-                            <div class="mt-auto">
-                                <!-- TODO: fix tranferring of data through forms -->
-                                <form action="../../actions/employee/shift-activity.php" method="post" class="px-0">
-                                    <button type="submit" class="form-control btn btn-success mb-2" name="shift" value = "1">Start Shift</button>
-                                    <button type="submit" class="form-control btn btn-danger" name="shift" value = "0">End Shift</button>
-                                </form>
+                                    <select name="activity" class="form-select w-100 my-3">
+                                        <option value="" hidden>Select Current Activity</option>
+                                        <?php while ($activity = $activities->fetch_assoc()) { ?>
+                                            <option value="<?= $activity['activity_id'] ?>"><?= $activity['activity_name'] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                    <!-- Hidden Input to store the current time -->
+                                    <input type="hidden" name="time" id="timeInput">
+                                    <button type="submit" class="form-control btn btn-primary mb-2" name="btn_activity" id="activitySelect">Update Activity</button>
+                                </div>
+                                
+                                <div class="mt-auto">
+                                    
+                                    <button type="submit" class="form-control btn btn-success mb-2" name="btn_shift" value = "1">Start Shift</button>
+                                    <button type="submit" class="form-control btn btn-danger" name="btn_shift" value = "0">End Shift</button>
+                                </div>
                             </div>
                         </form>
                     </div>
                     <div class="col-7 px-0 mt-4" style="max-height: 65vh; overflow-y:auto">
-                        <table class="table table-striped table-hover overflow-auto">
+                        <table class="table">
                             <thead class="table-dark">
                                 <tr>
-                                    <th>Activity</th>
+                                    <th>Activity Name</th>
                                     <th>Start Time</th>
                                     <th>End Time</th>
                                     <th>Duration</th>
@@ -69,251 +73,32 @@ $user = new User;
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Activity 1</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>####</td>
-                                    <td>
-                                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#view-remark">
-                                            <i class="fa-regular fa-message"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <!-- Additional rows omitted for brevity -->
+                                <?php 
+                                 $employee = new Employee; 
+
+                                 $activities = $employee->get_activities();
+                                if ($activities) { ?>
+                                    <?php while ($log = $activities->fetch_assoc()) { ?>
+                                        <tr>
+                                            <td><?= $log['activity_name'] ?></td>
+                                            <td><?= $log['start_time'] ?></td>
+                                            <td><?= $log['end_time'] ?? 'Ongoing' ?></td>
+                                            <td><?= $log['duration'] ?? 'In Progress' ?></td>
+                                            <td>
+                                                <button type="button" class="btn view-remark-btn" data-bs-toggle="modal" data-bs-target="#view-remark" data-entry-id="<?= $log['entry_id'] ?>">
+                                                    <i class="fa-regular fa-message"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+                                <?php } else { ?>
+                                    <tr>
+                                        <td colspan="4" class="text-center">No activities recorded</td>
+                                    </tr>
+                                <?php } ?>
                             </tbody>
                         </table>
+                       
                     </div>
                 </div>
         
@@ -324,33 +109,7 @@ $user = new User;
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        // When the select dropdown changes
-        $("#activitySelect").change(function () {
-            // Get selected option text
-            var selectedActivity = $(this).find("option:selected").text();
-            
-            // Update the <h1> element
-            $("#activityTitle").text(selectedActivity);
-        });
-    });
-
-    function updateTime() {
-        var now = new Date();
-        var hours = now.getHours().toString().padStart(2, '0'); // Format hours (00-23)
-        var minutes = now.getMinutes().toString().padStart(2, '0'); // Format minutes (00-59)
-        var seconds = now.getSeconds().toString().padStart(2, '0'); // Format seconds (00-59)
-
-        var formattedTime = hours + ":" + minutes + ":" + seconds;
-        document.getElementById("currentTime").textContent = formattedTime;
-    }
-
-    // Update time every second
-    setInterval(updateTime, 1000);
-
-    // Initial call to display time immediately
-    updateTime();
-</script>
+<script src="../../assets/js/employee/activity.js"></script>
+<script src="../../assets/js/shared/activity-modal.js"></script>
 </body>
 </html>

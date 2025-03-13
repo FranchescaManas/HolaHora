@@ -164,7 +164,7 @@ class Admin extends Database {
 
     public function create_activity($request){
         $activity_name = $request['activity_name'];
-        $sql = "INSERT INTO activities (`activity_name`, `isBillable`, `Status`) VALUES ('$activity_name', 1, 'Active')";
+        $sql = "INSERT INTO activities (`activity_name`, `isBillable`) VALUES ('$activity_name', 1)";
         
         if($this->conn->query($sql)){
             header("location: ../../views/shared/dashboard.php");

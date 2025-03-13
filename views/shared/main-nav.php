@@ -2,6 +2,7 @@
 
 session_start();
 $role = $_SESSION['role'];
+
 ?>
 
 <nav class="navbar navbar-expand-sm bg-light mb-5">

@@ -4,9 +4,13 @@ include "../../classes/Employee.php";
 
 $employee = new employee;
 
-$shift_type = $_POST["shift"];
-
-header("location: ./shift-activity.php");
-
-// $employee->shift($shift_type); 
+// Check which action was triggered
+if (isset($_POST['btn_activity'])) {
+    $employee->update_activity($_POST);
+} elseif (isset($_POST['btn_shift'])) {
+    $shift_type = $_POST["btn_shift"];
+    $employee->shift($_POST);
+} else {
+    die("Invalid request.");
+}
 ?>
