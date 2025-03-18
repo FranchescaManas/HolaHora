@@ -62,11 +62,11 @@ if ($role == 'A'){
     <?php
 } else if ($role == "E"){
     ?>
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-end">
 
-        <a href="" class="btn btn-primary">Correction</a>
-        <button type="button" class="btn btn-primary">Date Range Filter</button>
-        <button type="button" class="btn btn-primary">Export</button>
+        <a href="" class="btn btn-primary ms-1"><i class="fa-solid fa-calendar-check"></i></a>
+        <button type="button" class="btn btn-primary ms-1"><i class="fa-solid fa-calendar-days"></i></button>
+        <button type="button" class="btn btn-primary ms-1"><i class="fa-solid fa-file-export"></i></button>
     </div>
     <?php
 }

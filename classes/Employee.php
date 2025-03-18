@@ -169,6 +169,37 @@ class Employee extends Database {
             die("Error retrieving time entry data: " . $this->conn->error);
         }
     }
+
+    // TODO: ADD DATE RANGE FILTER FEATURE IN QUERY
+    public function get_activity_hours() {
+        $user_id = $_SESSION['user_id'];
+    
+        $sql = "SELECT 
+                    a.activity_name,
+                    ROUND(SUM(TIMESTAMPDIFF(SECOND, te.start_time, te.end_time)) / 3600, 2) AS total_hours
+                FROM time_entries te
+                JOIN activities a ON te.activity_id = a.activity_id
+                WHERE te.end_time IS NOT NULL 
+                AND te.start_time BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') 
+                                    AND LAST_DAY(CURDATE())
+                AND te.employee_id = $user_id
+                GROUP BY a.activity_id, a.activity_name
+                ORDER BY total_hours DESC";
+    
+        $result = $this->conn->query($sql);
+    
+        $data = [];
+        if ($result) {
+            while ($row = $result->fetch_assoc()) {
+                $data[] = [$row['activity_name'], (float)$row['total_hours']]; // Convert total_hours to float
+            }
+        } else {
+            die("Error retrieving time entry data: " . $this->conn->error);
+        }
+    
+        return $data;
+    }
+    
     
     
     

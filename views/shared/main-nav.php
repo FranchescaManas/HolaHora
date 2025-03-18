@@ -32,7 +32,7 @@ $role = $_SESSION['role'];
             </li>
           <?php elseif ($role == 'E'): ?>
             <li class="nav-item">
-              <a class="nav-link" href="#">Activity Tracker</a>
+              <a class="nav-link" href="../employee/activity.php">Activity Tracker</a>
             </li>
           <?php endif; ?>
 
