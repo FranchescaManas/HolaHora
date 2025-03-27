@@ -17,8 +17,10 @@
     <div class="container-fluid p-3 h-100 w-75">
         <div class="row">
             <?php
-            // TODO: row action buttons depending on current role logged in
+            // TODO: row action buttons depending on current role logged in (i dont remember)
             include "../manager/live-activity-actions.php";
+            include '../../classes/User.php';
+            $class = new User;
             ?>
 
             <div class="row">
@@ -32,12 +34,19 @@
                         <th>Duration</th>
                     </thead>
                     <tbody>
-                        <td>Employee Name</td>
-                        <td>Activity 1</td>
-                        <td>Team 1</td>
-                        <td>Department 1</td>
-                        <td>Position</td>
-                        <td>###</td>
+                    <?php
+                        $activities = $class->get_live_activities();
+                        while ($row = $activities->fetch_assoc()) {
+                            echo "<tr>
+                                    <td>{$row['name']}</td>
+                                    <td>{$row['activity_name']}</td>
+                                    <td>{$row['team_name']}</td>
+                                    <td>{$row['department_name']}</td>
+                                    <td>{$row['position']}</td>
+                                    <td>{$row['duration']} min</td>
+                                </tr>";
+                        }
+                        ?>
                     </tbody>
                 </table>
             </div>

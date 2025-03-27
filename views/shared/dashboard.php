@@ -1,6 +1,3 @@
-
-<!-- TODO: Utilize google charts for free charts
-  -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,35 +8,36 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script type="text/javascript" src="../../assets/js/employee/chart.js"></script> 
+    <script type="text/javascript" src="../../assets/js/shared/chart.js"></script> 
 </head>
 <body style="height: 100vh; border: 1px solid red">
 <?php 
+
 include '../shared/main-nav.php';
 include "view-remark-modal.php";
-$role = $_SESSION['role'];
+
 ?>
 
 <div class="container-fluid w-75 px-3 border border-1 " style="height:80vh">
-
+    
     <div class="row justify-content-evenly h-100">
         <div class="col-5 border border-1 px-0">
-           
+            
             <?php
                 include "dashboard-chart-menu.php";
-            ?>
+                ?>
             <div id="chart-container" style="width: 100%; max-width: 600px; margin: auto;">
+                <!-- TODO: Fix chart code to appear -->
                 <div id="piechart"></div>
             </div>
         </div>
         <?php
-        // table data condition based on login 
-        if($_SESSION['role'] == 'E'){
-            include '../../classes/Employee.php';
-            $employee = new Employee;
-            $activity_hours = $employee->get_activity_hours();
-            $activities = $employee->get_activities();
-        }
+        // TODO: remove the includes as they wil be defined in the main-nav
+        
+        $user = new User;
+
+        $activity_hours = $user->get_activity_hours();
+        $activities = $user->get_activity_dashboard();
         
         ?>
         <div class="col-7">
@@ -103,6 +101,7 @@ $role = $_SESSION['role'];
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
+<script src="../../assets/js/employee/activity.js"></script>
+<script src="../../assets/js/shared/activity-modal.js"></script>
 </body>
 </html>

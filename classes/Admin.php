@@ -3,7 +3,17 @@
 require_once "Database.php";
 
 class Admin extends Database {
-
+    /**
+     * CHECKLIST: 
+     *  - CREATE EMPLOYEE:
+     *      - INSERT INTO BOTH USERS AND EMPLOYEE TABLE (DONE)
+     *  - CREATE TEAM - DONE
+     *      - INSERT 
+     *  - CREATE DEPARTMENT (DONE)
+     *  - CREATE MANAGER
+     * 
+     * TODO: fix chart if activity is less than an hour (chart is empty if data is all less than an hour)
+     */
 
     
     public function create_employee($request){
@@ -11,9 +21,9 @@ class Admin extends Database {
         $username = $request['username'];
         $firstname = $request['firstname'];
         $lastname = $request['lastname'];
-        $email = $request['lastname'];
+        $email = $request['email'];
         $contact_no = $request['contact'];
-        $team_id = $request['team'];
+        $team_id = !empty($request['team']) ? (int) $request['team'] : "NULL";
         $position = $request['position'];
         $password = password_hash($request['password'], PASSWORD_DEFAULT);
 
@@ -28,8 +38,15 @@ class Admin extends Database {
             $sql = "INSERT INTO employees (`user_id`, `team_id`, `position`) VALUES ($user_id, $team_id, '$position')";
 
             if($this->conn->query($sql)){
-                header("location: ../../views/admin/edit-team.php");
+                // Get the previous page URL
+                $prevPage = $_SERVER['HTTP_REFERER'];
+
+                // Redirect to the previous page
+                header("Location: $prevPage");
                 exit;
+            }else{
+                die("Error Registering Employee: " . $this->conn->error);
+
             }
         }else{
             die("Error Registering Employee: " . $this->conn->error);
@@ -100,23 +117,40 @@ class Admin extends Database {
         }
     }
 
-    public function create_team($request){
-        // TODO: Continue here
+    public function create_team($request) {
         $team_name = $request['team_name'];
         $status = $request['status'];
         $department_id = $request['department'];
-        $user_id = $request['manager']; // user_id of the manager selected
-        $sql = "INSERT INTO teams (`user_id`, `department_id`, `team_name`, `status`)
-        VALUES ($user_id, $department_id, '$team_name', '$status')";
-
-        if($this->conn->query($sql)){
-            header("location: ../../views/admin/team-management.php");
-            exit;
-        } else{
+        $manager_id = $request['manager'];
+        $employees = $request['employees']; // This is already an array
+    
+        // Insert new team and get the inserted team's ID
+        $sql = "INSERT INTO teams (`user_id`, `department_id`, `team_name`, `status`) 
+                VALUES ($manager_id, $department_id, '$team_name', '$status')";
+    
+        if ($this->conn->query($sql)) {
+            $team_id = $this->conn->insert_id; // Get last inserted ID
+            echo "team id: $team_id";
+            // Now, update employees to assign them to this team
+            foreach ($employees as $employee_id) {
+                $update_sql = "UPDATE employees SET `team_id` = $team_id WHERE `user_id` = $employee_id";
+                echo "$update_sql";
+                if($this->conn->query($update_sql)){
+                    echo "added";
+                }else{
+                    die("erorr:". $this->conn->error );
+                }
+            }
+    
+            // // Redirect after successful creation
+            // header("location: ../../views/admin/team-management.php");
+            // exit;
+        } else {
             die("Error creating team: " . $this->conn->error);
         }
-
     }
+    
+    
 
     public function get_manager(){
         $sql = "SELECT * 
@@ -175,6 +209,63 @@ class Admin extends Database {
 
     }
 
+    public function get_all_employees(){
+        $sql = "SELECT 
+                    e.user_id,
+                    e.position,
+                    CONCAT(u.firstname, ' ', u.lastname) AS name, 
+                    u.status
+                FROM 
+                    employees e
+                LEFT JOIN users u ON e.user_id = u.user_id";
+
+        if($result = $this->conn->query($sql)){
+            return $result;
+        }else{
+            die("Error retrieving list of employees: " . $this->conn->error);
+        }
+     }
+
+    
+     public function search_employee($search) {
+        $sql = "SELECT 
+                    e.user_id,
+                    e.position,
+                    u.email,
+                    CONCAT(u.firstname, ' ', u.lastname) AS name, 
+                    u.status
+                FROM 
+                    employees e
+                LEFT JOIN users u ON e.user_id = u.user_id
+                WHERE firstname LIKE '%$search%' OR lastname LIKE '%$search%' 
+                ORDER BY firstname LIMIT 10";
+
+        $result = $this->conn->query($sql); 
+
+        // Check if query failed
+        if (!$result) {
+            die("Error in query: " . $this->conn->error); // Print the actual error
+        }
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                echo '<a href="#" class="dropdown-item employee-item" 
+                data-id="'.$row['user_id'].'" 
+                data-name="'.$row['name'].'" 
+                data-position="'.$row['position'].'" 
+                data-status="'.$row['status'].'">
+                '.$row['name'].' ('.$row['position'].')
+            </a>';
+            }
+        } else {
+            echo '<a href="#" class="dropdown-item disabled">No results found</a>';
+        }
+    }
+
+    
+    
+
+    
 
 }
 

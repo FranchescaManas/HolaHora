@@ -40,6 +40,6 @@ function drawChart() {
             // Redraw chart when window resizes
             window.addEventListener('resize', resizeChart);
         })
-        .catch(error => console.error('Error loading data:', error));
+        .catch(error => console.error('Error loading data:', response.json()));
 }
 

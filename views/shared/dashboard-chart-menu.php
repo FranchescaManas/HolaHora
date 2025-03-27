@@ -1,21 +1,21 @@
 
 <?php
 
+include "../../classes/User.php";
 
 if ($role == 'A'){
     include "../../classes/Admin.php";
-    include "../../classes/User.php";
     $admin = new Admin;
     $user = new User;
     
     include "../admin/activity-modal.php";
     ?>
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-end">
 
         <div class="dropdown">
     
-            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-                Filter
+            <button type="button" class="btn btn-primary ms-1 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+            <i class="fa-solid fa-filter"></i>
             </button>
             <form class="dropdown-menu p-4">
                 <div class="mb-3">
@@ -49,18 +49,19 @@ if ($role == 'A'){
                 <button type="submit" class="btn btn-primary">Save</button>
             </form>
         </div>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#">
-        Date Filter
+        <button type="button" class="btn btn-primary ms-1" data-bs-toggle="modal" data-bs-target="#">
+        <i class="fa-solid fa-calendar-check"></i>
         </button>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#">
-        Export
+        <button type="button" class="btn btn-primary ms-1" data-bs-toggle="modal" data-bs-target="#">
+        <i class="fa-solid fa-file-export"></i>
         </button>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#actitiviesModal">
+        <button type="button" class="btn btn-primary ms-1" data-bs-toggle="modal" data-bs-target="#actitiviesModal">
         Activities
         </button>
     </div>
     <?php
 } else if ($role == "E"){
+    include '../../classes/Employee.php';
     ?>
     <div class="d-flex justify-content-end">
 

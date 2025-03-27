@@ -2,11 +2,19 @@
 
 include_once "../../classes/Admin.php";
 
+
 $admin = new Admin;
 
 $admin->get_department();
-
 $all_teams = $admin->get_teams();
+
+$teams = [];
+while ($team_select = $all_teams->fetch_assoc()) {
+    $teams[] = $team_select; // Store results in an array
+}
+
+$all_employees = $admin->get_all_employees()
+
 
 ?>
 
@@ -25,13 +33,16 @@ $all_teams = $admin->get_teams();
 include '../shared/main-nav.php';
 include 'create-department.php';
 include 'create-manager-modal.php';
+include 'create-employee-modal.php';
+
 
 ?>
 
 <div class="container h-75 w-75 border border-1 border-primary">
 
     <div class="row justify-content-end mb-2">
-        <a href="create-team.php" class="btn btn-primary w-auto">Create Team</a>
+        <button type="button" class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#create-employee-modal">Create Employee</button>
+        <a href="create-team.php" class="btn btn-primary ms-2 w-auto">Create Team</a>
         <button type="button" class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#create-department" data-bs-whatever="@mdo">Create Department</button>
         <button type="button" class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#create-manager-modal" data-bs-whatever="@mdo">Create Manager</button>
       
@@ -85,7 +96,7 @@ include 'create-manager-modal.php';
             </thead>
             <tbody>
                 <?php
-                while($team = $all_teams->fetch_assoc()){
+                foreach ($teams as $team){
                 ?>
                 <tr>
                     <td class="align-middle"><?= $team['team_name']?></td>

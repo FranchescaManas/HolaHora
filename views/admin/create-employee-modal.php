@@ -26,24 +26,24 @@
                     <label for="email" class="form-label">Email</label>
                     <input type="email" class="form-control" name="email">
                 </div>
-                <div class="mb-3">
-                    <label for="position" class="form-label">Position</label>
-                    <input type="text" class="form-control" name="position">
-                </div>
+                
             </div>
             <div class="col">
                 
-                <div class="mb-3">
-                    <label for="department" class="form-label">Department:</label>
-                    <select name="department" id="" class="form-select">
-                        <option value="1">Department</option>
-                    </select>
-                </div>
+               
                 <div class="mb-3">
                     <label for="team" class="form-label">Team:</label>
                     <select name="team" id="" class="form-select">
-                        <option value="1">Team</option>
+                      <option value="" hidden>Optional</option>
+
+                      <?php foreach ($teams as $team) { ?>
+                        <option value="<?= $team['team_id'] ?>"><?= $team['team_name'] ?></option>
+                      <?php } ?>
                     </select>
+                </div>
+                <div class="mb-3">
+                    <label for="position" class="form-label">Position</label>
+                    <input type="text" class="form-control" name="position">
                 </div>
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
