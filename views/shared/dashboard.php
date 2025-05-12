@@ -9,6 +9,7 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script type="text/javascript" src="../../assets/js/shared/chart.js"></script> 
+
 </head>
 <body style="height: 100vh; border: 1px solid red">
 <?php 
@@ -103,5 +104,6 @@ include "view-remark-modal.php";
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="../../assets/js/employee/activity.js"></script>
 <script src="../../assets/js/shared/activity-modal.js"></script>
+<script src="../../assets/js/admin/activity.js"></script>
 </body>
 </html>

@@ -26,6 +26,7 @@ $all_employees = $admin->get_all_employees()
     <title>Team Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="border border-1 border-danger" style="height: 100vh">
 
@@ -41,10 +42,18 @@ include 'create-employee-modal.php';
 <div class="container h-75 w-75 border border-1 border-primary">
 
     <div class="row justify-content-end mb-2">
-        <button type="button" class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#create-employee-modal">Create Employee</button>
-        <a href="create-team.php" class="btn btn-primary ms-2 w-auto">Create Team</a>
-        <button type="button" class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#create-department" data-bs-whatever="@mdo">Create Department</button>
-        <button type="button" class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#create-manager-modal" data-bs-whatever="@mdo">Create Manager</button>
+        <button type="button" class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#create-employee-modal">
+            <i class="fa-solid fa-user-plus"></i>
+        </button>
+        <a href="create-team.php" class="btn btn-primary ms-2 w-auto">
+            <i class="fa-solid fa-users-line"></i>
+        </a>
+        <button type="button" class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#create-department">
+            <i class="fa-solid fa-people-roof"></i>
+        </button>
+        <button type="button" class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#create-manager-modal">
+            <i class="fa-solid fa-user-tie"></i>
+        </button>
       
 
         <div class="dropdown w-auto px-0 ms-2">
@@ -128,5 +137,6 @@ include 'create-employee-modal.php';
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
 </body>
 </html>

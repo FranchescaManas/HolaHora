@@ -5,12 +5,30 @@ require_once "Database.php";
 class Admin extends Database {
     /**
      * CHECKLIST: 
-     *  - CREATE EMPLOYEE:
-     *      - INSERT INTO BOTH USERS AND EMPLOYEE TABLE (DONE)
-     *  - CREATE TEAM - DONE
-     *      - INSERT 
-     *  - CREATE DEPARTMENT (DONE)
-     *  - CREATE MANAGER
+     *  DONE: 
+     *      - Add/Delete Activities
+     *      - Edit Activity (name/isBillable)
+     *      - Create Department
+     *      - Create Employee
+     *      - Create Team 
+     *      - Create Manager
+     *      - Dashboard Visualizations
+     *      - Live Activity table
+     *      
+     *
+     *  TODO: 
+     *      
+     *      - Dashboard Filters
+     *      - Dashboard Date range filter
+     *      - Dashboard export data (CSV/Excel)
+     *      - Team management : Filter team table
+     *      - Team Management : Delete Department
+     *      - Dashboard Data Fix
+     *      - Edit Department
+     *      - Edit Manager Details
+     *      - Edit Employee Details
+     *      - Edit Team Details
+     *      
      * 
      * TODO: fix chart if activity is less than an hour (chart is empty if data is all less than an hour)
      */
@@ -53,7 +71,6 @@ class Admin extends Database {
         }
     }
 
-    // function 2.. etc etc
     public function create_manager($request) {
         // Extract and sanitize input
         $username = $request['username'];
@@ -123,10 +140,10 @@ class Admin extends Database {
         $department_id = $request['department'];
         $manager_id = $request['manager'];
         $employees = $request['employees']; // This is already an array
-    
+        
         // Insert new team and get the inserted team's ID
         $sql = "INSERT INTO teams (`user_id`, `department_id`, `team_name`, `status`) 
-                VALUES ($manager_id, $department_id, '$team_name', '$status')";
+                VALUES ($manager_id, $department_id, '$team_name', $status)";
     
         if ($this->conn->query($sql)) {
             $team_id = $this->conn->insert_id; // Get last inserted ID
@@ -142,9 +159,9 @@ class Admin extends Database {
                 }
             }
     
-            // // Redirect after successful creation
-            // header("location: ../../views/admin/team-management.php");
-            // exit;
+            // Redirect after successful creation
+            header("location: ../../views/admin/team-management.php");
+            exit;
         } else {
             die("Error creating team: " . $this->conn->error);
         }
@@ -262,7 +279,42 @@ class Admin extends Database {
         }
     }
 
-    
+    public function delete_activity($activity_id){
+        $sql = "DELETE from activities WHERE `activity_id` = $activity_id";
+
+        if($this->conn->query($sql)){
+            header("location: ../../views/shared/dashboard.php");
+            exit;
+        } else{
+            die("Error deleting team: " . $this->conn->error);
+        }
+    }
+
+    public function delete_department($department_id){
+        $sql = "DELETE from departments WHERE `department_id` = $department_id";
+
+        if($this->conn->query($sql)){
+            header("location: ../../views/admin/team-management.php");
+            exit;
+        } else{
+            die("Error deleting team: " . $this->conn->error);
+        }
+    }
+
+    public function update_activity($activity_id, $activity_name, $isBillable)
+    {
+        $activity_id = intval($activity_id);
+        $activity_name = $this->conn->real_escape_string(trim($activity_name));
+        $isBillable = intval($isBillable);
+
+        $sql = "UPDATE activities 
+                SET `activity_name` = '$activity_name', `isBillable` = $isBillable 
+                WHERE `activity_id` = $activity_id";
+
+        $result = $this->conn->query($sql);
+
+        return $result ? true : false;
+    }
     
 
     

@@ -31,20 +31,22 @@
 
                     while($department = $all_departments->fetch_assoc()){
                     ?>
-                        <tr>
-                            <td><?= $department['department_name']; ?></td>
+                        <tr data-id="<?= $department['department_id']; ?>">
+                            <td class="department-name"><?= $department['department_name']; ?></td>
                             <td>
-                                <a href="" class="btn btn-outline-danger border-0"><i class="fa-solid fa-trash-can"></i></a>
+                    
+                                <button type="button" class="btn btn-outline-success btn-sm save-btn d-none">
+                                    <i class="fa-solid fa-check"></i>
+                                </button>
+                                <a href="../../actions/admin/delete-department.php?department_id=<?= $department['department_id']?>" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-trash-can"></i></a>
                             </td>
                         </tr>
-
                     <?php
-
                     }
                     ?>
-                            
-                        
                     </tbody>
+
+
                 </table>
             </div>
        
@@ -54,3 +56,4 @@
     </div>
   </div>
 </div>
+

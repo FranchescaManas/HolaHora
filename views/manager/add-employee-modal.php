@@ -11,7 +11,7 @@
         <!-- Search -->
         <div class="input-group mb-3">
           <input type="text" class="form-control" id="search_employee_modal" placeholder="Search Employee...">
-          <button class="btn btn-outline-secondary" type="button" id="clear_search">Clear</button>
+          <!-- <button class="btn btn-outline-secondary" type="button" id="clear_search">Clear</button> -->
         </div>
         <div id="employee_list_modal" class="dropdown-menu w-100"></div>
 
