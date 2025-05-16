@@ -139,23 +139,26 @@ class Admin extends Database {
         $status = $request['status'];
         $department_id = $request['department'];
         $manager_id = $request['manager'];
-        $employees = $request['employees']; // This is already an array
+        $employees = array_filter($request['employees']); // This is already an array
         
         // Insert new team and get the inserted team's ID
         $sql = "INSERT INTO teams (`user_id`, `department_id`, `team_name`, `status`) 
-                VALUES ($manager_id, $department_id, '$team_name', $status)";
+                VALUES ($manager_id, $department_id, '$team_name', '$status')";
     
         if ($this->conn->query($sql)) {
             $team_id = $this->conn->insert_id; // Get last inserted ID
-            echo "team id: $team_id";
+            
             // Now, update employees to assign them to this team
-            foreach ($employees as $employee_id) {
-                $update_sql = "UPDATE employees SET `team_id` = $team_id WHERE `user_id` = $employee_id";
-                echo "$update_sql";
-                if($this->conn->query($update_sql)){
-                    echo "added";
-                }else{
-                    die("erorr:". $this->conn->error );
+           
+            if(!empty($employees)){
+                foreach ($employees as $employee_id) {
+                    $update_sql = "UPDATE employees SET `team_id` = $team_id WHERE `user_id` = $employee_id";
+                    echo "$update_sql";
+                    if($this->conn->query($update_sql)){
+                        echo "added";
+                    }else{
+                        die("erorr:". $this->conn->error );
+                    }
                 }
             }
     
@@ -315,9 +318,124 @@ class Admin extends Database {
 
         return $result ? true : false;
     }
-    
 
+    public function get_specific_team($team_id){
+        $sql = "SELECT 
+                t.team_id,
+                t.team_name,
+                u.user_id,
+                d.department_id,
+                concat(u.firstname, u.lastname) AS name,  -- Assuming `user_name` is the column for user names
+                d.department_name AS department_name,  -- Assuming `department_name` is the column for department names
+                t.status
+            FROM 
+                teams t
+            LEFT JOIN users u ON t.user_id = u.user_id
+            LEFT JOIN departments d ON t.department_id = d.department_id
+            WHERE t.team_id = $team_id;";
+
+        if($result = $this->conn->query($sql)){
+            return $result->fetch_assoc();
+        }else{
+            die("Error retrieving teams table: " . $this->conn->error);
+        }
+
+    }
     
+    public function get_specific_team_employees($team_id) {
+        $sql = "SELECT 
+                    e.user_id,
+                    e.position,
+                    CONCAT(u.firstname, ' ', u.lastname) AS name, 
+                    u.status
+                FROM 
+                    employees e
+                LEFT JOIN users u ON e.user_id = u.user_id
+                WHERE e.team_id = ?";
+
+        $stmt = $this->conn->prepare($sql);
+        if ($stmt) {
+            $stmt->bind_param("i", $team_id); // "i" means integer
+            $stmt->execute();
+            $result = $stmt->get_result();
+            return $result;
+        } else {
+            die("Error preparing statement: " . $this->conn->error);
+        }
+    }
+
+     public function edit_team($request) {
+        $team_id = $request['team_id'];  // Make sure this is passed in the request
+        $team_name = $request['team_name'];
+        $status = $request['status'];
+        $department_id = $request['department'];
+        $manager_id = $request['manager'];
+        $employees = array_filter($request['employees']); // Clean array of employees
+
+        // 1. Update the team info (name, manager, department, status)
+        $sql = "UPDATE teams 
+                SET `user_id` = $manager_id,
+                    `department_id` = $department_id,
+                    `team_name` = '$team_name',
+                    `status` = '$status'
+                WHERE team_id = $team_id";
+
+        if ($this->conn->query($sql)) {
+
+            // 2. Unassign all employees from this team first (optional but recommended)
+            $reset_sql = "UPDATE employees SET team_id = NULL WHERE team_id = $team_id";
+            $this->conn->query($reset_sql);
+
+            // 3. Reassign selected employees to the updated team
+            if (!empty($employees)) {
+                foreach ($employees as $employee_id) {
+                    $update_sql = "UPDATE employees SET team_id = $team_id WHERE user_id = $employee_id";
+                    if (!$this->conn->query($update_sql)) {
+                        die("Error assigning employee: " . $this->conn->error);
+                    }
+                }
+            }
+
+            // Redirect after successful update
+            header("location: ../../views/admin/team-management.php");
+            exit;
+
+        } else {
+            die("Error updating team: " . $this->conn->error);
+        }
+    }
+
+    public function get_employee_details($user_id){
+  
+        $sql = "SELECT 
+                    u.firstname, 
+                    u.lastname, 
+                    u.email, 
+                    u.username, 
+                    u.contact_no, 
+                    e.position,
+                    e.team_id,
+                    t.team_name AS team,
+                    m.firstname AS manager_firstname,
+                    m.lastname AS manager_lastname
+                FROM users u
+                INNER JOIN employees e ON u.user_id = e.user_id
+                INNER JOIN teams t ON e.team_id = t.team_id
+                LEFT JOIN users m ON t.user_id = m.user_id
+                WHERE u.user_id = $user_id;";
+        $result = $this->conn->query($sql);
+
+        if ($result->num_rows > 0) {
+            // Assuming the employee data is found, fetch it
+            $employee = $result->fetch_assoc();
+            
+            return $employee;
+        } else {
+            // Return an error if no employee is found
+            echo json_encode(['error' => 'Employee not found']);
+        }
+    }
+            
 
 }
 

@@ -159,6 +159,8 @@ class User extends Database {
                                         AND LAST_DAY(CURDATE())
                     AND te.employee_id = $user_id";
 
+                    // compute time entries that are only billable. to see billable activities there an 'activities' table columsn: activity_id, activity_name, isBillable (boolean)
+
         }elseif($role == 'A'){
             $sql = "SELECT entry_id, activity_name, start_time, end_time, TIMEDIFF(end_time, start_time) AS duration
                     FROM time_entries te

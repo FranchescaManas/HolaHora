@@ -32,13 +32,7 @@ $assigned_status = $team_data['status'];
 
 <div class="container w-75 h-75 bg-white border rounded-3 p-3 d-flex flex-column">
     <form action="../../actions/admin/edit-team.php" method="post" class="d-flex flex-column h-100">
-        <div class="row justify-content-end mb-3 mx-1">
-            <input type="text" class="form-control w-25" name="search_employee" id="search_employee" placeholder="Search Employee...">
-            <div id="employee_list" class="dropdown-menu w-25"></div>
-            <button class="btn btn-primary w-auto ms-2" id="add_employee">Add Employee</button>
-            <button class="btn btn-primary w-auto ms-2"  data-bs-toggle="modal" data-bs-target="#create-employee-modal">Create Employee</button>
-
-        </div>
+        
         <div class="row">
             <div class="col-4">
                 <div class="mb-3">
@@ -83,23 +77,22 @@ $assigned_status = $team_data['status'];
                 </div>
             </div>
             <div class="col">
-                <table class="table table-hover table-striped" id="team_employee_list">
+               <table class="table table-hover table-striped" id="team_employee_list">
                     <thead class="table-dark">
-                        <th>Employee Name</th>
-                        <th>Position</th>
-                        <th>Status</th>
-                        <th></th>
+                        <tr>
+                            <th>Employee Name</th>
+                            <th>Position</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
                     </thead>
                     <tbody>
-                        <?php
-                        foreach ($employees as $employee){
-                        ?>
-
-                        <tr data-user-id="<?= $employee['user_id']; ?>">
-                            <td class="align-middle"><?= $employee['name'];?></td>
-                            <td class="align-middle"><?= $employee['position'];?></td>
-                            <td class="align-middle"><?= $employee['status'];?></td>
-                            <td class="align-middle">
+                        <?php foreach ($employees as $employee): ?>
+                            <tr data-user-id="<?= $employee['user_id']; ?>">
+                                <td class="align-middle"><?= $employee['name']; ?></td>
+                                <td class="align-middle"><?= $employee['position']; ?></td>
+                                <td class="align-middle"><?= $employee['status']; ?></td>
+                                <td class="align-middle">
                                <div class="d-flex align-items-center gap-2">
                                 <button 
                                 type="button" 
@@ -108,35 +101,23 @@ $assigned_status = $team_data['status'];
                                 >
                                 View
                                 </button>
-                                <button class="btn btn-danger btn-sm remove-employee">Remove</button>
                                 </div>
                             </td>
-                        </tr>
-                        <?php
-                        }
-                        ?>
+                            </tr>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
+
                 <input type="hidden" name="team_id" value="<?= $team_id?>">
                 <input type="hidden" name="employees[]" id="employees">
             </div>
         </div>
-        <div class="row mt-auto">
-            <div class="col text-end mt-3">
-                <button type="submit" class="btn btn-primary me-2">
-                    Save
-                </button>
-                <button type="button" class="btn btn-secondary">
-                    Cancel
-                </button>
-            </div>
-        </div>
+        
     </form>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="../../assets/js/admin/employee-detail.js"></script>
-<script src="../../assets/js/admin/create-team.js"></script>
 
 </body>
 </html>

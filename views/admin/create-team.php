@@ -48,7 +48,7 @@ $team_list = [];
                     <?php
                     while($manager = $all_manager->fetch_assoc()){
                     ?>
-                        <option value="<?= $manager['user_id']?>"><?= $manager['firstname'] . ' ' . $manager['lastname']?></option>
+                        <option value="<?= $manager['user_id']?>"><?= $manager['firstname'] . ' ' . $manager['lastname'] . $manager['user_id']?></option>
 
                     <?php
                     }

@@ -1,14 +1,14 @@
-$(document).ready(function(){
+$(document).ready(function () {
     let selectedEmployees = {}; // Store selected employees to prevent duplicates
 
-    $('#search_employee').keyup(function(){
+    $('#search_employee').keyup(function () {
         let query = $(this).val();
         if (query !== '') {
             $.ajax({
                 url: '../../actions/admin/search-employees.php',
                 method: 'POST',
                 data: { query: query },
-                success: function(data){
+                success: function (data) {
                     $('#employee_list').html(data).show();
                 }
             });
@@ -67,12 +67,14 @@ $(document).ready(function(){
     });
 
     // Remove employee from team
-    $(document).on("click", ".remove-employee", function () {
-        let row = $(this).closest("tr");
-        let userId = row.data("id");
-
-        delete selectedEmployees[userId];
-        row.remove();
+    document.querySelectorAll('.remove-employee').forEach(button => {
+        button.addEventListener('click', function (e) {
+            e.stopPropagation(); // Prevent bubbling
+            const row = this.closest('tr');
+            const userId = row.dataset.userId;
+            console.log("Removing user ID:", userId);
+            row.remove(); // Or trigger a backend call
+        });
     });
 
     // Hide dropdown when clicking outside
@@ -83,8 +85,17 @@ $(document).ready(function(){
     });
 
     $("form").on("submit", function () {
-        let employeeIds = Object.keys(selectedEmployees); // Get all selected employee IDs
+        let employeeIds = [];
+
+        // Get all userIds from the table rows directly
+        $("#team_employee_list tbody tr").each(function () {
+            let userId = $(this).data("id");
+            if (userId) {
+                employeeIds.push(userId);
+            }
+        });
+
         $("#employees").val(employeeIds.join(",")); // Store them in the hidden input
     });
-    
+
 });

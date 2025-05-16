@@ -42,17 +42,21 @@ include 'create-employee-modal.php';
 <div class="container h-75 w-75 border border-1 border-primary">
 
     <div class="row justify-content-end mb-2">
+        <button type="button" class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#create-manager-modal">
+            <!-- <i class="fa-solid fa-user-tie"></i> -->
+            <i class="fa-solid fa-user-tie me-1"></i> Add Manager
+        </button>
         <button type="button" class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#create-employee-modal">
-            <i class="fa-solid fa-user-plus"></i>
+            <!-- <i class="fa-solid fa-user-plus"></i> -->
+            <i class="fa-solid fa-user-plus me-1"></i> Add Employee
         </button>
         <a href="create-team.php" class="btn btn-primary ms-2 w-auto">
-            <i class="fa-solid fa-users-line"></i>
+            <!-- <i class="fa-solid fa-users-line"></i> -->
+            <i class="fa-solid fa-people-group me-1"></i> Create Team
         </a>
         <button type="button" class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#create-department">
-            <i class="fa-solid fa-people-roof"></i>
-        </button>
-        <button type="button" class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#create-manager-modal">
-            <i class="fa-solid fa-user-tie"></i>
+            <!-- <i class="fa-solid fa-people-roof"></i> -->
+            <i class="fa-solid fa-building me-1"></i> Departments
         </button>
       
 
@@ -69,16 +73,7 @@ include 'create-employee-modal.php';
                         <option value="" >Inactive</option>
                      </select>
                   </div>
-                  <div class="mb-3">
-                     <label for="exampleDropdownFormEmail2" class="form-label">Position</label>
-                     <select name="team_filter" id="" class="form-select">
-                        <option value="" hidden>Select Position</option>
-                        <option value="" >Position 1</option>
-                        <option value="" >Position 2</option>
-                        <option value="" >Position 3</option>
-                        <option value="" >Position 4</option>
-                     </select>
-                  </div>
+                 
                   <div class="mb-3">
                      <label for="exampleDropdownFormEmail2" class="form-label">Team</label>
                      <select name="team_filter" id="" class="form-select">
@@ -113,13 +108,13 @@ include 'create-employee-modal.php';
                     <td class="align-middle"><?= $team['name']?></td>
                     <td class="align-middle"><?= $team['department_name']?></td>
                     <td>
-                        <button class="btn bg-none border-0" data-bs-toggle="modal" data-bs-target="#employee-modal">
+                        <a href="../../views/admin/view-team.php?team_id=<?=$team['team_id']?>" class="btn bg-none border-0">
                             <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                        </button>
+                        </a>
                     
-                        <button class="btn bg-none border-0">
+                        <a href="../../views/admin/edit-team.php?team_id=<?=$team['team_id']?>" class="btn bg-none border-0">
                             <i class="fa-regular fa-pen-to-square"></i>
-                        </button>
+                        </a>
                     
                         
                         <a href="../../actions/admin/delete-team.php?team_id=<?=$team['team_id']?>" class="btn bg-none border-0">

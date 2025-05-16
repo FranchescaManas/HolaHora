@@ -28,12 +28,11 @@ include "view-remark-modal.php";
                 include "dashboard-chart-menu.php";
                 ?>
             <div id="chart-container" style="width: 100%; max-width: 600px; margin: auto;">
-                <!-- TODO: Fix chart code to appear -->
+                
                 <div id="piechart"></div>
             </div>
         </div>
         <?php
-        // TODO: remove the includes as they wil be defined in the main-nav
         
         $user = new User;
 
