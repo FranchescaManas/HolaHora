@@ -405,36 +405,7 @@ class Admin extends Database {
         }
     }
 
-    public function get_employee_details($user_id){
-  
-        $sql = "SELECT 
-                    u.firstname, 
-                    u.lastname, 
-                    u.email, 
-                    u.username, 
-                    u.contact_no, 
-                    e.position,
-                    e.team_id,
-                    t.team_name AS team,
-                    m.firstname AS manager_firstname,
-                    m.lastname AS manager_lastname
-                FROM users u
-                INNER JOIN employees e ON u.user_id = e.user_id
-                INNER JOIN teams t ON e.team_id = t.team_id
-                LEFT JOIN users m ON t.user_id = m.user_id
-                WHERE u.user_id = $user_id;";
-        $result = $this->conn->query($sql);
-
-        if ($result->num_rows > 0) {
-            // Assuming the employee data is found, fetch it
-            $employee = $result->fetch_assoc();
-            
-            return $employee;
-        } else {
-            // Return an error if no employee is found
-            echo json_encode(['error' => 'Employee not found']);
-        }
-    }
+    
             
 
 }

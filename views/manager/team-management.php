@@ -15,6 +15,8 @@
    <?php 
    include "../shared/main-nav.php";
    include "../../classes/Manager.php";
+   include '../shared/view-employee-modal.php';
+
 
    $manager = new Manager;
    
@@ -79,15 +81,20 @@
                   <?php
                   while ($row = $team_employees->fetch_assoc()) {
                   ?>
-                  <tr>
+                  <tr data-user-id="<?=$row['user_id'];?>">
                      <td class="align-middle"><?= $row['employee_name']?></td>
                      <td class="align-middle"><?= $row['Status']?></td>
                      <td class="align-middle"><?= $row['Position']?></td>
                      <td class="align-middle"><?= $row['Position']?></td>
                      <td>
-                        <button class="btn bg-none border-0" data-bs-toggle="modal" data-bs-target="#employee-modal">
+                        <button 
+                        type="button" 
+                        class="btn btn-sm view-employee" 
+                        data-user-id="<?= $row['user_id']; ?>" 
+                        >
                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                        </button>
+                              </button>
+                        </div>
                   
                         <button class="btn bg-none border-0">
                            <i class="fa-regular fa-pen-to-square"></i>
@@ -110,6 +117,7 @@
    </div>
    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
    <script src="../../assets/js/manager/team-management.js"></script>
+   <script src="../../assets/js/shared/employee-detail.js"></script>
 
  </body>
  </html>

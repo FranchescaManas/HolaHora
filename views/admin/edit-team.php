@@ -14,7 +14,7 @@
 <body class="border border-1 border-danger bg-light" style="height: 100vh">
 <?php 
 include '../shared/main-nav.php';
-include 'view-employee-modal.php';
+include '../shared/view-employee-modal.php';
 include '../../classes/Admin.php';
 
 $admin = new Admin;
@@ -135,7 +135,7 @@ $assigned_status = $team_data['status'];
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-<script src="../../assets/js/admin/employee-detail.js"></script>
+<script src="../../assets/js/shared/employee-detail.js"></script>
 <script src="../../assets/js/admin/create-team.js"></script>
 
 </body>

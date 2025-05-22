@@ -6,7 +6,8 @@ class Manager extends Database {
     
     public function get_team_employees(){
         $user_id = $_SESSION['user_id'];
-        $sql = "SELECT 
+        $sql = "SELECT
+                    u.user_id,
                     CONCAT(u.firstname, ' ', u.lastname) AS employee_name,
                     u.Status,
                     e.Position,

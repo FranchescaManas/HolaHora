@@ -1,20 +1,18 @@
 
 $(document).ready(function() {
-  // When the View button is clicked
+ 
   $('.view-employee').on('click', function() {
     // Get employee ID from the data attribute
     var userId = $(this).closest('tr').data('user-id');
-
-    console.log("lkajfdlakj");
     // Make AJAX request to get employee data (you can adapt this depending on your back-end setup)
     $.ajax({
-      url: '"../../../../actions/admin/view-employee.php', // The PHP script to get the details
+      url: '"../../../../actions/user/view-employee.php', // The PHP script to get the details
       type: 'GET', 
       data: { user_id: userId }, // Pass the employee ID to the server
       success: function(employee) {
         // Assuming response is a JSON object with the employee's details
+        console.log(employee); 
         var employee = JSON.parse(employee);
-        console.log(employee);
         // Populate the modal fields with the employee data
         $('#view-firstname').val(employee.firstname);  // Set value for read-only field
         $('#view-lastname').val(employee.lastname);
