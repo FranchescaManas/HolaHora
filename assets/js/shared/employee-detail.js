@@ -1,31 +1,38 @@
+$(document).ready(function () {
+  $('.view-employee').on('click', function () {
+    var userId = $(this).data('user-id');
+    var targetModal = $(this).data('bs-target'); // Detect which modal to open
 
-$(document).ready(function() {
- 
-  $('.view-employee').on('click', function() {
-    // Get employee ID from the data attribute
-    var userId = $(this).closest('tr').data('user-id');
-    // Make AJAX request to get employee data (you can adapt this depending on your back-end setup)
     $.ajax({
-      url: '"../../../../actions/user/view-employee.php', // The PHP script to get the details
-      type: 'GET', 
-      data: { user_id: userId }, // Pass the employee ID to the server
-      success: function(employee) {
-        // Assuming response is a JSON object with the employee's details
-        console.log(employee); 
-        var employee = JSON.parse(employee);
-        // Populate the modal fields with the employee data
-        $('#view-firstname').val(employee.firstname);  // Set value for read-only field
-        $('#view-lastname').val(employee.lastname);
-        $('#view-contact').val(employee.contact_no);
-        $('#view-email').val(employee.email);
-        $('#view-position').val(employee.position);
-        $('#view-team').val(employee.team);
-        $('#view-username').val(employee.username);
-        
-        // Show the modal
-        $('#view-employee-modal').modal('show');
+      url: '../../../../actions/admin/view-employee.php',
+      type: 'GET',
+      data: { user_id: userId },
+      success: function (response) {
+        var employee = JSON.parse(response);
+
+        // Populate both modals depending on which one was triggered
+        if (targetModal === '#view-employee-modal') {
+          $('#view-firstname').val(employee.firstname);
+          $('#view-lastname').val(employee.lastname);
+          $('#view-contact').val(employee.contact);
+          $('#view-email').val(employee.email);
+          $('#view-position').val(employee.position);
+          $('#view-team').val(employee.team);
+          $('#view-username').val(employee.username);
+        }
+
+        if (targetModal === '#edit-employee-modal') {
+          $('#edit-firstname').val(employee.firstname);
+          $('#edit-lastname').val(employee.lastname);
+          $('#edit-contact').val(employee.contact);
+          $('#edit-email').val(employee.email);
+          $('#edit-position').val(employee.position_id); // Use ID for select
+          $('#edit-team').val(employee.team_id);         // Use ID for select
+          $('#edit-username').val(employee.username);
+          $('#edit-user-id').val(employee.user_id);      // hidden field for updating
+        }
       },
-      error: function() {
+      error: function () {
         alert('Error fetching employee details');
       }
     });

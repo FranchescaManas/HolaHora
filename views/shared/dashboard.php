@@ -18,7 +18,7 @@ include '../shared/main-nav.php';
 include "view-remark-modal.php";
 
 ?>
-
+<!-- TODO: MANAGER CANT SEE ANYTHING WITH DATA LESS THAN AN HOUR -->
 <div class="container-fluid w-75 px-3 border border-1 " style="height:80vh">
     
     <div class="row justify-content-evenly h-100">

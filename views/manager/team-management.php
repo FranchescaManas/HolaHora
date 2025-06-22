@@ -16,6 +16,7 @@
    include "../shared/main-nav.php";
    include "../../classes/Manager.php";
    include '../shared/view-employee-modal.php';
+   include '../shared/edit-employee-modal.php';
 
 
    $manager = new Manager;
@@ -87,19 +88,27 @@
                      <td class="align-middle"><?= $row['Position']?></td>
                      <td class="align-middle"><?= $row['Position']?></td>
                      <td>
+                        <!-- View button -->
                         <button 
                         type="button" 
                         class="btn btn-sm view-employee" 
                         data-user-id="<?= $row['user_id']; ?>" 
-                        >
-                           <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                              </button>
-                        </div>
-                  
-                        <button class="btn bg-none border-0">
-                           <i class="fa-regular fa-pen-to-square"></i>
+                        data-bs-toggle="modal" 
+                        data-bs-target="#view-employee-modal">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
                         </button>
-                     
+
+                        <!-- Edit button -->
+                        <button 
+                        type="button" 
+                        class="btn btn-sm view-employee" 
+                        data-user-id="<?= $row['user_id']; ?>" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#edit-employee-modal">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                        </button>
+
+                                             
                         <button class="btn bg-none border-0">
                            <i class="fa-solid fa-trash"></i>
                         </button>
