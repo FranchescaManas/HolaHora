@@ -57,7 +57,7 @@ class User extends Database {
             session_abort();
             session_destroy();
             
-            header('Location: ../../views/');
+            header('Location: ../..');
             exit;
         }else{
             die("Error setting user status to online. " . $this->conn->error);

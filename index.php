@@ -13,7 +13,7 @@
     <h1 class="display-5 fw-bold mb-5">Hola Hora</h1>
     <div class="card w-25 bg-white">
         <div class="card-body">
-            <form action="../actions/user/login.php" method="post">
+            <form action="actions/user/login.php" method="post">
                 <input type="text" name="username" placeholder="Username" class="form-control my-4" required autofocus>
                 <input type="password" name="password" placeholder="Password" class="form-control my-4" required>
 
