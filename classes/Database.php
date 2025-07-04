@@ -4,7 +4,7 @@
         private $server_name = "localhost";
         private $db_username = "root";
         private $db_password = "";
-        private $db_name = "hola_hora";
+        private $db_name = "don_hola_hora";
         protected $conn;
 
         public function __construct(){
