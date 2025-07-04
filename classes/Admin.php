@@ -59,7 +59,7 @@ class Admin extends Database {
                 // Get the previous page URL
                 $prevPage = $_SERVER['HTTP_REFERER'];
 
-                // Redirect to the previous page
+                // // Redirect to the previous page
                 header("Location: $prevPage");
                 exit;
             }else{
@@ -315,6 +315,7 @@ class Admin extends Database {
                 WHERE `activity_id` = $activity_id";
 
         $result = $this->conn->query($sql);
+        
 
         return $result ? true : false;
     }
@@ -370,7 +371,9 @@ class Admin extends Database {
         $status = $request['status'];
         $department_id = $request['department'];
         $manager_id = $request['manager'];
-        $employees = array_filter($request['employees']); // Clean array of employees
+        $employees = $request['employees']; // Clean array of employees
+        $employees = explode(',', $employees[0]);
+       
 
         // 1. Update the team info (name, manager, department, status)
         $sql = "UPDATE teams 
@@ -387,7 +390,7 @@ class Admin extends Database {
             $this->conn->query($reset_sql);
 
             // 3. Reassign selected employees to the updated team
-            if (!empty($employees)) {
+            if (!empty($employees[0])) {
                 foreach ($employees as $employee_id) {
                     $update_sql = "UPDATE employees SET team_id = $team_id WHERE user_id = $employee_id";
                     if (!$this->conn->query($update_sql)) {

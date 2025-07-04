@@ -16,7 +16,7 @@
    include "../shared/main-nav.php";
    include "../../classes/Manager.php";
    include '../shared/view-employee-modal.php';
-   include '../shared/edit-employee-modal.php';
+   
 
 
    $manager = new Manager;
@@ -24,6 +24,26 @@
    include "add-employee-modal.php";
 
    $team_employees = $manager->get_team_employees();
+
+   $employees = [];
+   $positions = [];
+   $teams = [];
+
+   while ($row = $team_employees->fetch_assoc()) {
+      $employees[] = $row;
+      $position = $row['Position'];
+      $team = $row['team'] ?? 'Unassigned';
+
+       if (!in_array($position, $positions)) {
+        $positions[] = $position;
+      }
+      if (!in_array($team, $teams)) {
+         $teams[] = $team;
+      }
+   }
+
+   
+   
 
    ?>
    <div class="container h-75 w-75 border border-1 border-primary">
@@ -48,20 +68,35 @@
                      <label for="exampleDropdownFormEmail2" class="form-label">Position</label>
                      <select name="team_filter" id="" class="form-select">
                         <option value="" hidden>Select Position</option>
-                        <option value="" >Position 1</option>
-                        <option value="" >Position 2</option>
-                        <option value="" >Position 3</option>
-                        <option value="" >Position 4</option>
+                        <?php
+                          $positions = [];
+                           foreach ($employees as $row): 
+                              if (!in_array($row['Position'], $positions)) {
+                                    $positions[] = $row['Position'];
+                           ?>
+                              <option value="<?= $row['Position'] ?>"><?= $row['Position'] ?></option>
+                           <?php 
+                              } 
+                           endforeach; 
+                           ?>
+                        
                      </select>
                   </div>
                   <div class="mb-3">
                      <label for="exampleDropdownFormEmail2" class="form-label">Team</label>
                      <select name="team_filter" id="" class="form-select">
                         <option value="" hidden>Select Team</option>
-                        <option value="" >Team 1</option>
-                        <option value="" >Team 2</option>
-                        <option value="" >Team 3</option>
-                        <option value="" >Team 4</option>
+                        <?php
+                        $teams = [];
+                           foreach ($employees as $row): 
+                              if (!in_array($row['team_name'], $teams)) {
+                                    $teams[] = $row['team_name'];
+                           ?>
+                              <option value="<?= $row['team_name'] ?>"><?= $row['team_name'] ?></option>
+                           <?php 
+                              } 
+                           endforeach; 
+                           ?>
                      </select>
                   </div>
                   <button type="submit" class="btn btn-primary">Save</button>
@@ -80,13 +115,13 @@
                </thead>
                <tbody>
                   <?php
-                  while ($row = $team_employees->fetch_assoc()) {
+                  foreach ($employees as $row):
                   ?>
                   <tr data-user-id="<?=$row['user_id'];?>">
                      <td class="align-middle"><?= $row['employee_name']?></td>
                      <td class="align-middle"><?= $row['Status']?></td>
                      <td class="align-middle"><?= $row['Position']?></td>
-                     <td class="align-middle"><?= $row['Position']?></td>
+                     <td class="align-middle"><?= $row['team_name']?></td>
                      <td>
                         <!-- View button -->
                         <button 
@@ -108,14 +143,15 @@
                         <i class="fa-regular fa-pen-to-square"></i>
                         </button>
 
-                                             
-                        <button class="btn bg-none border-0">
-                           <i class="fa-solid fa-trash"></i>
-                        </button>
+                     <!-- TODO: DELETE BUTTON SHOULD REMOVE EMPLOYEE FROM THE TEAM, NOT FROM THE DATABASE -->
+                            <a href="../../actions/manager/remove-employee.php?user_id=<?=$row['user_id']?>"
+                              class="btn bg-none border-0">
+                                 <i class="fa-solid fa-trash"></i>
+                            </a> 
                      </td>
                   </tr>
                   <?php
-                  }
+                  endforeach;
                   ?>
                   
                </tbody>
@@ -124,6 +160,9 @@
          
 
    </div>
+   <?php
+   include '../shared/edit-employee-modal.php';
+   ?>
    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
    <script src="../../assets/js/manager/team-management.js"></script>
    <script src="../../assets/js/shared/employee-detail.js"></script>

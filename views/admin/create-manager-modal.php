@@ -32,14 +32,18 @@
                     <label for="department" class="form-label">Department:</label>
                     <select name="department" id="1" class="form-select">
                         <option value="" hidden>Assign Department (optional)</option>
-                        <option value="1">Department</option>
+                        <?php foreach ($departments as $department) { ?>
+                        <option value="<?= $department['department_id'] ?>"><?= $department['department_name'] ?></option>
+                      <?php } ?>
                     </select>
                 </div>
                 <div class="mb-3">
                     <label for="team" class="form-label">Team:</label>
                     <select name="team" id="" class="form-select">
                       <option value="" hidden>Assign Team (optional)</option>
-                      <option value="1">Team</option>
+                      <?php foreach ($teams as $team) { ?>
+                        <option value="<?= $team['team_id'] ?>"><?= $team['team_name'] ?></option>
+                      <?php } ?>
                     </select>
                 </div>
               

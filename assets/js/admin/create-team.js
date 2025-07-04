@@ -1,6 +1,7 @@
 $(document).ready(function () {
-    let selectedEmployees = {}; // Store selected employees to prevent duplicates
+    let selectedEmployees = {}; // To prevent duplicates
 
+    // Search employee
     $('#search_employee').keyup(function () {
         let query = $(this).val();
         if (query !== '') {
@@ -17,6 +18,7 @@ $(document).ready(function () {
         }
     });
 
+    // Select from suggestion
     $(document).on("click", ".employee-item", function (e) {
         e.preventDefault();
         let userId = $(this).data("id");
@@ -24,17 +26,18 @@ $(document).ready(function () {
         let position = $(this).data("position");
         let status = $(this).data("status");
 
-        $("#search_employee").val(name);
-        $("#search_employee").attr("data-id", userId);
-        $("#search_employee").attr("data-position", position);
-        $("#search_employee").attr("data-status", status);
+        $("#search_employee").val(name)
+            .attr("data-user-id", userId)
+            .attr("data-position", position)
+            .attr("data-status", status);
         $("#employee_list").hide();
     });
 
-    // Add employee to the team table
+    // Add employee to table
     $("#add_employee").on("click", function (e) {
         e.preventDefault();
-        let userId = $("#search_employee").attr("data-id");
+
+        let userId = $("#search_employee").attr("data-user-id");
         let name = $("#search_employee").val();
         let position = $("#search_employee").attr("data-position") || "Unknown";
         let status = $("#search_employee").attr("data-status") || "Active";
@@ -45,14 +48,14 @@ $(document).ready(function () {
         }
 
         if (selectedEmployees[userId]) {
-            alert("Employee is already in the team!");
+            alert("Employee already added!");
             return;
         }
 
         selectedEmployees[userId] = true;
 
         let newRow = `
-            <tr data-id="${userId}">
+            <tr data-user-id="${userId}">
                 <td class="align-middle">${name}</td>
                 <td class="align-middle">${position}</td>
                 <td class="align-middle">${status}</td>
@@ -61,41 +64,38 @@ $(document).ready(function () {
                 </td>
             </tr>
         `;
-
         $("#team_employee_list tbody").append(newRow);
-        $("#search_employee").val("").removeAttr("data-id");
+        $("#search_employee").val("").removeAttr("data-user-id data-position data-status");
     });
 
-    // Remove employee from team
-    document.querySelectorAll('.remove-employee').forEach(button => {
-        button.addEventListener('click', function (e) {
-            e.stopPropagation(); // Prevent bubbling
-            const row = this.closest('tr');
-            const userId = row.dataset.userId;
-            console.log("Removing user ID:", userId);
-            row.remove(); // Or trigger a backend call
-        });
+    // Remove employee (delegated event)
+    $(document).on('click', '.remove-employee', function (e) {
+        e.stopPropagation();
+        const row = $(this).closest('tr');
+        const userId = row.data('user-id');
+        console.log("Removing user ID:", userId);
+        delete selectedEmployees[userId];
+        row.remove();
     });
 
-    // Hide dropdown when clicking outside
+    // Hide search dropdown when clicking outside
     $(document).on("click", function (e) {
         if (!$(e.target).closest("#search_employee, #employee_list").length) {
             $("#employee_list").hide();
         }
     });
 
-    $("form").on("submit", function () {
+    // Submit form: convert selected IDs to comma string
+    $("form").on("submit", function (e) {
+        // e.preventDefault()
         let employeeIds = [];
-
-        // Get all userIds from the table rows directly
         $("#team_employee_list tbody tr").each(function () {
-            let userId = $(this).data("id");
+            let userId = $(this).data("user-id");
             if (userId) {
                 employeeIds.push(userId);
             }
         });
-
-        $("#employees").val(employeeIds.join(",")); // Store them in the hidden input
+        console.log("Submitted IDs:", employeeIds);
+        $("#employees").val(employeeIds.join(","));
     });
-
 });

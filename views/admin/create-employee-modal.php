@@ -8,6 +8,11 @@
       <div class="modal-body">
        
         <form method="post" action="../../actions/admin/create-employee.php">
+          <?php
+          $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+          $lastpage = basename($path);
+
+          ?>
           <div class="row">
             <div class="col">
                 <div class="mb-3">
@@ -30,17 +35,20 @@
             </div>
             <div class="col">
                 
-               
-                <div class="mb-3">
-                    <label for="team" class="form-label">Team:</label>
-                    <select name="team" id="" class="form-select">
-                      <option value="" hidden>Optional</option>
 
-                      <?php foreach ($teams as $team) { ?>
-                        <option value="<?= $team['team_id'] ?>"><?= $team['team_name'] ?></option>
-                      <?php } ?>
-                    </select>
-                </div>
+                <?php if ($lastpage !== "create-team.php") { ?>
+                    <div class="mb-3">
+                        <label for="team" class="form-label">Team:</label>
+                        <select name="team" id="" class="form-select">
+                            <option value="" hidden>Optional</option>
+                            <?php foreach ($teams as $team) { ?>
+                                <option value="<?= $team['team_id'] ?>"><?= $team['team_name'] ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                <?php } else { ?>
+                    <input type="hidden" name="team_id" value="default">
+                <?php } ?>
                 <div class="mb-3">
                     <label for="position" class="form-label">Position</label>
                     <input type="text" class="form-control" name="position">

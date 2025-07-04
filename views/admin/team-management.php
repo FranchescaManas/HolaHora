@@ -7,6 +7,12 @@ $admin = new Admin;
 
 $admin->get_department();
 $all_teams = $admin->get_teams();
+$all_department = $admin->get_department();
+
+$departments = [];
+while ($department_select = $all_department->fetch_assoc()) {
+    $departments[] = $department_select; // Store results in an array
+}
 
 $teams = [];
 while ($team_select = $all_teams->fetch_assoc()) {
@@ -39,7 +45,7 @@ include 'create-employee-modal.php';
 
 ?>
 
-<div class="container h-75 w-75 border border-1 border-primary">
+<div class="container h-75 w-75 overflow-auto">
 
     <div class="row justify-content-end mb-2">
         <button type="button" class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#create-manager-modal">
@@ -78,10 +84,9 @@ include 'create-employee-modal.php';
                      <label for="exampleDropdownFormEmail2" class="form-label">Team</label>
                      <select name="team_filter" id="" class="form-select">
                         <option value="" hidden>Select Team</option>
-                        <option value="" >Team 1</option>
-                        <option value="" >Team 2</option>
-                        <option value="" >Team 3</option>
-                        <option value="" >Team 4</option>
+                        <?php foreach ($teams as $team) { ?>
+                                <option value="<?= $team['team_id'] ?>"><?= $team['team_name'] ?></option>
+                        <?php } ?>
                      </select>
                   </div>
                   <button type="submit" class="btn btn-primary">Save</button>
@@ -89,8 +94,8 @@ include 'create-employee-modal.php';
             </div>
     </div>
 
-    <div class="row">
-        <table class="table table-hover table-striped">
+    <div class="row flex-grow-1 overflow-auto">
+        <table class="table table-hover table-striped mb-0">
             <thead class="table-dark">
                 <th>Team</th>
                 <th>Status</th>
@@ -123,9 +128,12 @@ include 'create-employee-modal.php';
                         
                     </td>
                 </tr>
+
                 <?php
                 }
                 ?>
+                
+
             </tbody>
         </table>
     </div>

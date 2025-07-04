@@ -81,6 +81,17 @@ class Manager extends Database {
             die("Error retrieving employees: " . $this->conn->error);
         }
     }
+
+    public function remove_employee($user_id){
+        $sql = "UPDATE employees SET team_id = NULL WHERE user_id = $user_id";
+
+        if($this->conn->query($sql)){
+            header("location: ../../views/manager/team-management.php");
+            exit;
+        } else{
+            die("Error removing employee from the team: " . $this->conn->error);
+        }
+    }
     
 }
 

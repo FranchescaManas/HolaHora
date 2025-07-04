@@ -11,6 +11,8 @@ if (isset($_POST['activity_id'], $_POST['activity_name'], $_POST['isBillable']))
 
     $result = $admin->update_activity($activity_id, $activity_name, $isBillable);
 
+
     echo $result ? "success" : "error";
+    
 }
 ?>

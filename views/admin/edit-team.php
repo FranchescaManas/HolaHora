@@ -101,13 +101,14 @@ $assigned_status = $team_data['status'];
                             <td class="align-middle"><?= $employee['status'];?></td>
                             <td class="align-middle">
                                <div class="d-flex align-items-center gap-2">
-                                <button 
-                                type="button" 
-                                class="btn btn-primary btn-sm view-employee" 
-                                data-user-id="<?= $row['user_id']; ?>" 
-                                >
-                                View
-                                </button>
+                                <div class="d-flex align-items-center gap-2">
+                                        <button 
+                                        type="button" 
+                                        class="btn btn-primary btn-sm view-employee" data-bs-toggle="modal" data-bs-target="#view-employee-modal"
+                                        data-user-id="<?=$employee['user_id']; ?>" 
+                                        >
+                                        View
+                                        </button>
                                 <button class="btn btn-danger btn-sm remove-employee">Remove</button>
                                 </div>
                             </td>

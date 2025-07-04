@@ -4,17 +4,17 @@ $(document).ready(function () {
     var targetModal = $(this).data('bs-target'); // Detect which modal to open
 
     $.ajax({
-      url: '../../../../actions/admin/view-employee.php',
+      url: '../../actions/user/view-employee.php',
       type: 'GET',
       data: { user_id: userId },
       success: function (response) {
         var employee = JSON.parse(response);
-
-        // Populate both modals depending on which one was triggered
+        console.log(employee);
+        // // Populate both modals depending on which one was triggered
         if (targetModal === '#view-employee-modal') {
           $('#view-firstname').val(employee.firstname);
           $('#view-lastname').val(employee.lastname);
-          $('#view-contact').val(employee.contact);
+          $('#view-contact').val(employee.contact_no);
           $('#view-email').val(employee.email);
           $('#view-position').val(employee.position);
           $('#view-team').val(employee.team);
@@ -24,10 +24,10 @@ $(document).ready(function () {
         if (targetModal === '#edit-employee-modal') {
           $('#edit-firstname').val(employee.firstname);
           $('#edit-lastname').val(employee.lastname);
-          $('#edit-contact').val(employee.contact);
+          $('#edit-contact').val(employee.contact_no);
           $('#edit-email').val(employee.email);
-          $('#edit-position').val(employee.position_id); // Use ID for select
-          $('#edit-team').val(employee.team_id);         // Use ID for select
+          $('#edit-position').val(employee.position); // Use ID for select
+          $('#edit-team').val(employee.team);         // Use ID for select
           $('#edit-username').val(employee.username);
           $('#edit-user-id').val(employee.user_id);      // hidden field for updating
         }

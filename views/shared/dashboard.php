@@ -19,10 +19,10 @@ include "view-remark-modal.php";
 
 ?>
 <!-- TODO: MANAGER CANT SEE ANYTHING WITH DATA LESS THAN AN HOUR -->
-<div class="container-fluid w-75 px-3 border border-1 " style="height:80vh">
+<div class="container-fluid w-75 px-3" style="height:80vh">
     
-    <div class="row justify-content-evenly h-100">
-        <div class="col-5 border border-1 px-0">
+    <div class="row justify-content-evenly h-100 border">
+        <div class="col-5 border-end">
             
             <?php
                 include "dashboard-chart-menu.php";
@@ -40,61 +40,67 @@ include "view-remark-modal.php";
         $activities = $user->get_activity_dashboard();
         
         ?>
-        <div class="col-7">
-            <table class="table table-striped table-hover mb-3">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Activity</th>
-                        <?php foreach ($activity_hours as $activity) { ?>
-                            <th><?= htmlspecialchars($activity[0]) ?></th> <!-- Activity Name -->
-                        <?php } ?>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Hours</td>
-                        <?php foreach ($activity_hours as $activity) { ?>
-                            <td><?= htmlspecialchars($activity[1]) ?></td> <!-- Total Hours -->
-                        <?php } ?>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="col-7 h-100 d-flex flex-column">
+            <div class="row flex-shrink-0">
 
+                <table class="table table-striped table-hover mb-3">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Activity</th>
+                            <?php foreach ($activity_hours as $activity) { ?>
+                                <th><?= htmlspecialchars($activity[0]) ?></th> <!-- Activity Name -->
+                            <?php } ?>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Hours</td>
+                            <?php foreach ($activity_hours as $activity) { ?>
+                                <td><?= htmlspecialchars($activity[1]) ?></td> <!-- Total Hours -->
+                            <?php } ?>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-
-            <table class="table table-striped table-hover">
-                <thead class="table-dark">
-                    <th>Activity </th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
-                    <th>Duration</th>
-                    <th></th>
-                </thead>
-                <tbody>
-                    <?php
-                    if ($activities) { ?>
-                        <?php while ($log = $activities->fetch_assoc()) { ?>
+            <div class="row flex-grow-1 overflow-auto">
+                                
+                <table class="table table-striped table-hover mb-0" >
+                    <thead class="table-dark">
+                        <th>Activity </th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Duration</th>
+                        <th></th>
+                    </thead>
+                    <tbody>
+                        <?php
+                        if ($activities) { ?>
+                            <?php while ($log = $activities->fetch_assoc()) { ?>
+                                <tr>
+                                    <td><?= $log['activity_name'] ?></td>
+                                    <td><?= $log['start_time'] ?></td>
+                                    <td><?= $log['end_time'] ?? 'Ongoing' ?></td>
+                                    <td><?= $log['duration'] ?? 'In Progress' ?></td>
+                                    <td>
+                                        <button type="button" class="btn view-remark-btn" data-bs-toggle="modal" data-bs-target="#view-remark" data-entry-id="<?= $log['entry_id'] ?>">
+                                            <i class="fa-regular fa-message"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                        <?php } else { ?>
                             <tr>
-                                <td><?= $log['activity_name'] ?></td>
-                                <td><?= $log['start_time'] ?></td>
-                                <td><?= $log['end_time'] ?? 'Ongoing' ?></td>
-                                <td><?= $log['duration'] ?? 'In Progress' ?></td>
-                                <td>
-                                    <button type="button" class="btn view-remark-btn" data-bs-toggle="modal" data-bs-target="#view-remark" data-entry-id="<?= $log['entry_id'] ?>">
-                                        <i class="fa-regular fa-message"></i>
-                                    </button>
-                                </td>
+                                <td colspan="4" class="text-center">No activities recorded</td>
                             </tr>
                         <?php } ?>
-                    <?php } else { ?>
-                        <tr>
-                            <td colspan="4" class="text-center">No activities recorded</td>
-                        </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+
+            </div>                   
+            
         </div>
-        </div>
+    
        
     </div>
 </div>
