@@ -129,6 +129,7 @@ class Admin extends Database {
 
         if($result = $this->conn->query($sql)){
             return $result;
+            header('location: ../views/admin/team-management.php');
         } else{
             die("Error retrieving all departments: " . $conn->error);
         }
