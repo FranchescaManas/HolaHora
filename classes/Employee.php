@@ -5,7 +5,7 @@ require_once "Database.php";
 class Employee extends Database {
 
     public function shift($request) {
-        // session_start();
+        session_start();
         $user_id = $_SESSION['user_id'];
         $shift_type = $request['btn_shift'];
         $current_time = $request['time']; // Get current server time
@@ -51,7 +51,7 @@ class Employee extends Database {
     
 
     public function update_activity($request) {
-        // session_start();
+        session_start();
         $user_id = $_SESSION['user_id'];
         $activity_id = $request['activity'];
         $current_time = $request['time']; // Current time from form
@@ -171,7 +171,7 @@ class Employee extends Database {
     }
 
     public function add_activity_remark($activity_id, $remarks) {
-        // session_start();
+        session_start();
         $user_id = $_SESSION['user_id'];
         $remarks = $this->conn->real_escape_string($remarks);
     
