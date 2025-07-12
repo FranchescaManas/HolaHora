@@ -49,7 +49,7 @@ session_start();
    
 
    ?>
-   <div class="container h-75 w-75 border border-1 border-primary">
+   <div class="container h-75 w-75 ">
       
          
          <div class="row justify-content-end mb-2">

@@ -37,7 +37,7 @@ $role = $_SESSION['role'];
 
           <?php if ($role != 'E'): ?>
             <li class="nav-item">
-              <a class="nav-link" href="../shared/live-activity.php">Live Activity</a>
+              <a class="nav-link" href="../shared/live-activity.php">Activity Tracker</a>
             </li>
           <?php endif; ?>
         </ul>
