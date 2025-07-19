@@ -32,6 +32,7 @@ session_start();
    $employees = [];
    $positions = [];
    $teams = [];
+   print_r($employee_list);
 
    while ($row = $employee_list->fetch_assoc()) {
       $employees[] = $row;
@@ -75,10 +76,10 @@ session_start();
                         <?php
                           $positions = [];
                            foreach ($employees as $row): 
-                              if (!in_array($row['Position'], $positions)) {
-                                    $positions[] = $row['Position'];
+                              if (!in_array($row['position'], $positions)) {
+                                    $positions[] = $row['position'];
                            ?>
-                              <option value="<?= $row['Position'] ?>"><?= $row['Position'] ?></option>
+                              <option value="<?= $row['position'] ?>"><?= $row['Position'] ?></option>
                            <?php 
                               } 
                            endforeach; 
@@ -93,10 +94,10 @@ session_start();
                         <?php
                         $teams = [];
                            foreach ($employees as $row): 
-                              if (!in_array($row['team_name'], $teams)) {
-                                    $teams[] = $row['team_name'];
+                              if (!in_array($row['team'], $teams)) {
+                                    $teams[] = $row['team'];
                            ?>
-                              <option value="<?= $row['team_name'] ?>"><?= $row['team_name'] ?></option>
+                              <option value="<?= $row['team'] ?>"><?= $row['team'] ?></option>
                            <?php 
                               } 
                            endforeach; 
@@ -112,9 +113,10 @@ session_start();
             <table class="table table-hover table-striped">
                <thead class="table-dark">
                   <th>Employee Name</th>
-                  <th>Status</th>
                   <th>Position</th>
                   <th>Team</th>
+                  <th>Manager</th>
+                  <th>Department</th>
                   <th></th>
                </thead>
                <tbody>
@@ -122,10 +124,11 @@ session_start();
                   foreach ($employees as $row):
                   ?>
                   <tr data-user-id="<?=$row['user_id'];?>">
-                     <td class="align-middle"><?= $row['employee_name']?></td>
-                     <td class="align-middle"><?= $row['Status']?></td>
-                     <td class="align-middle"><?= $row['Position']?></td>
-                     <td class="align-middle"><?= $row['team_name']?></td>
+                     <td class="align-middle"><?= $row['firstname'] $row['lastname']?></td>
+                     <td class="align-middle"><?= $row['manager_firstname'] $row['manager_lastname']?></td>
+                     <td class="align-middle"><?= $row['position']?></td>
+                     <td class="align-middle"><?= $row['team']?></td>
+                     <td class="align-middle"></td>
                      <td>
                         <!-- View button -->
                         <button 
