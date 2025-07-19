@@ -17,7 +17,7 @@ session_start();
 
    <?php 
    include "../shared/main-nav.php";
-   include "../../classes/Users.php";
+   include "../../classes/Admin.php";
    include '../shared/view-employee-modal.php';
    
 
