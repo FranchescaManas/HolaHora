@@ -124,8 +124,8 @@ session_start();
                   foreach ($employees as $row):
                   ?>
                   <tr data-user-id="<?=$row['user_id'];?>">
-                     <td class="align-middle"><?= $row['firstname'] $row['lastname']?></td>
-                     <td class="align-middle"><?= $row['manager_firstname'] $row['manager_lastname']?></td>
+                     <td class="align-middle"><?= $row['firstname']. ' ' . $row['lastname']?></td>
+                     <td class="align-middle"><?= $row['manager_firstname']. ' ' . $row['manager_lastname']?></td>
                      <td class="align-middle"><?= $row['position']?></td>
                      <td class="align-middle"><?= $row['team']?></td>
                      <td class="align-middle"></td>
