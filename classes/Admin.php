@@ -409,6 +409,57 @@ class Admin extends Database {
         }
     }
 
+    public function get_managers_list(){
+        $sql = "SELECT 
+                    u.user_id,
+                    u.firstname, 
+                    u.lastname, 
+                    u.email, 
+                    u.username, 
+                    u.contact_no, 
+                    e.position,
+                    e.team_id,
+                    t.team_name AS team,
+                    m.firstname AS manager_firstname,
+                    m.lastname AS manager_lastname
+                FROM users u
+                INNER JOIN employees e ON u.user_id = e.user_id
+                INNER JOIN teams t ON e.team_id = t.team_id
+                LEFT JOIN users m ON t.user_id = m.user_id;";
+
+        if($result = $this->conn->query($sql)){
+            return $result;
+        } else{
+            die("Error retrieving all departments: " . $conn->error);
+        }
+    }
+
+    public function get_employee_list(){
+        $sql = "SELECT 
+                    u.user_id,
+                    u.firstname, 
+                    u.lastname, 
+                    u.email, 
+                    u.username, 
+                    u.contact_no, 
+                    u.role,
+                    e.position,
+                    e.team_id,
+                    t.team_name AS team,
+                    m.firstname AS manager_firstname,
+                    m.lastname AS manager_lastname
+                FROM users u
+                INNER JOIN employees e ON u.user_id = e.user_id
+                INNER JOIN teams t ON e.team_id = t.team_id
+                LEFT JOIN users m ON t.user_id = m.user_id
+                WHERE u.role = 'E';";
+
+        if($result = $this->conn->query($sql)){
+            return $result;
+        } else{
+            die("Error retrieving all employee list: " . $conn->error);
+        }
+    }
     
             
 

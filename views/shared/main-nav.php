@@ -25,6 +25,12 @@ $role = $_SESSION['role'];
             <li class="nav-item">
               <a class="nav-link" href="../admin/team-management.php">Teams</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="../admin/view-manager-list.php">Managers</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="../admin/team-view-employee-list.php">Employees</a>
+            </li>
           <?php elseif ($role == 'M'): ?>
             <li class="nav-item">
               <a class="nav-link" href="../manager/team-management.php">My Employees</a>

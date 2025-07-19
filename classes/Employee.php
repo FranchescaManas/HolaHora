@@ -10,7 +10,7 @@ class Employee extends Database {
         $shift_type = $request['btn_shift'];
         $current_time = $request['time']; // Get current server time
         $current_date = date("Y-m-d"); // Get current date
-        print_r($request);
+        
     
         // Update the user's online status
         $sql = "UPDATE users SET `online` = $shift_type WHERE `user_id` = $user_id";
