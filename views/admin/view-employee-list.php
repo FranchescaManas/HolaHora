@@ -26,7 +26,7 @@ session_start();
    
    include "add-employee-modal.php";
 
-   $team_employees = $admin->get_team_employees();
+   // $team_employees = $admin->get_team_employees();
    $employee_list = $admin->get_employee_list();
 
    $employees = [];
@@ -35,7 +35,7 @@ session_start();
 
    while ($row = $employee_list->fetch_assoc()) {
       $employees[] = $row;
-      $position = $row['Position'];
+      $position = $row['position'];
       $team = $row['team'] ?? 'Unassigned';
 
        if (!in_array($position, $positions)) {
