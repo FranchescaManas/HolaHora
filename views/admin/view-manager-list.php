@@ -27,20 +27,20 @@ session_start();
    include "add-employee-modal.php";
 
    // $team_employees = $admin->get_team_employees();
-   $employee_list = $admin->get_employee_list();
+   $manager_list = $admin->get_manager_list();
 
-   $employees = [];
+   $managers = [];
    $positions = [];
    $teams = [];
 
 
-   while ($row = $employee_list->fetch_assoc()) {
-      $employees[] = $row;
-      $position = $row['position'];
+   while ($row = $manager_list->fetch_assoc()) {
+      $managers[] = $row;
+      $department = $row['department'];
       $team = $row['team'] ?? 'Unassigned';
 
-       if (!in_array($position, $positions)) {
-        $positions[] = $position;
+       if (!in_array($department, $team)) {
+        $departments[] = $team;
       }
       if (!in_array($team, $teams)) {
          $teams[] = $team;
@@ -74,12 +74,12 @@ session_start();
                      <select name="team_filter" id="" class="form-select">
                         <option value="" hidden>Select Position</option>
                         <?php
-                          $positions = [];
-                           foreach ($employees as $row): 
-                              if (!in_array($row['position'], $positions)) {
-                                    $positions[] = $row['position'];
+                          $departments = [];
+                           foreach ($managers as $row): 
+                              if (!in_array($row['department'], $departments)) {
+                                    $departments[] = $row['department'];
                            ?>
-                              <option value="<?= $row['position'] ?>"><?= $row['Position'] ?></option>
+                              <option value="<?= $row['department'] ?>"><?= $row['department'] ?></option>
                            <?php 
                               } 
                            endforeach; 
@@ -93,7 +93,7 @@ session_start();
                         <option value="" hidden>Select Team</option>
                         <?php
                         $teams = [];
-                           foreach ($employees as $row): 
+                           foreach ($managers as $row): 
                               if (!in_array($row['team'], $teams)) {
                                     $teams[] = $row['team'];
                            ?>
@@ -112,8 +112,7 @@ session_start();
          <div class="row">
             <table class="table table-hover table-striped">
                <thead class="table-dark">
-                  <th>Employee Name</th>
-                  <th>Position</th>
+                  <th>Manager Name</th>
                   <th>Team</th>
                   <th>Manager</th>
                   <th>Department</th>
@@ -121,7 +120,7 @@ session_start();
                </thead>
                <tbody>
                   <?php
-                  foreach ($employees as $row):
+                  foreach ($managers as $row):
                   ?>
                   <tr data-user-id="<?=$row['user_id'];?>">
                      <td class="align-middle"><?= $row['firstname']. ' ' . $row['lastname']?></td>

@@ -416,16 +416,17 @@ class Admin extends Database {
                     u.lastname, 
                     u.email, 
                     u.username, 
-                    u.contact_no, 
-                    e.position,
-                    e.team_id,
+                    u.contact_no,
                     t.team_name AS team,
+                    t.department_id,
+                    d.department_name AS department,
                     m.firstname AS manager_firstname,
                     m.lastname AS manager_lastname
                 FROM users u
-                INNER JOIN employees e ON u.user_id = e.user_id
-                INNER JOIN teams t ON e.team_id = t.team_id
-                LEFT JOIN users m ON t.user_id = m.user_id;";
+                INNER JOIN teams t ON u.user_id = t.user_id
+                INNER JOIN departments d ON t.department_id = d.department_id
+                LEFT JOIN users m ON t.user_id = m.user_id
+                WHERE u.role = 'M';";
 
         if($result = $this->conn->query($sql)){
             return $result;
