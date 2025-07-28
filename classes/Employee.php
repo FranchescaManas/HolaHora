@@ -101,45 +101,49 @@ class Employee extends Database {
      
 
     public function get_activities() {
-        // TODO: error handling (past midnight and date reference should be shift_start)
-       
         $user_id = $_SESSION['user_id'];
-    
-        // Get the latest shift start time for today
         $current_date = date("Y-m-d");
-        $sql = "SELECT shift_start FROM shifts 
+
+        // Get the latest shift for today
+        $sql = "SELECT shift_start, shift_end FROM shifts 
                 WHERE employee_id = $user_id 
                 AND shift_date = '$current_date' 
                 ORDER BY shift_start DESC 
                 LIMIT 1";
-    
         $result = $this->conn->query($sql);
         if ($result->num_rows > 0) {
             $shift = $result->fetch_assoc();
             $shift_start = $shift['shift_start'];
+            $shift_end = $shift['shift_end']; // Might be NULL
         } else {
-            // No shift found, return empty result
             return [];
         }
-    
-        // Retrieve activities after the shift started, computing duration using TIMEDIFF
-        $sql = "SELECT te.entry_id, te.employee_id, te.activity_id, a.activity_name, a.isBillable, 
-                       te.date, te.start_time, te.end_time, 
-                       CASE 
-                           WHEN te.end_time IS NOT NULL THEN TIMEDIFF(te.end_time, te.start_time)
-                           ELSE NULL 
-                       END AS duration, 
-                       te.remarks 
-                FROM time_entries te
-                INNER JOIN activities a ON te.activity_id = a.activity_id
-                WHERE te.employee_id = $user_id 
-                AND te.date = '$current_date' 
-                AND te.start_time >= '$shift_start' 
-                ORDER BY te.start_time ASC";
-    
-        return $result = $this->conn->query($sql);
-    
+
+        // Define fallback end_time if not set
+        $fallback_end = $shift_end ? "'$shift_end'" : "NULL";
+        $sql = "
+           SELECT te.entry_id, te.employee_id, te.activity_id, a.activity_name, a.isBillable, 
+       te.date, te.start_time, te.end_time,
+       CASE 
+           WHEN te.end_time IS NOT NULL THEN TIMEDIFF(te.end_time, te.start_time)
+           WHEN '$shift_end' IS NOT NULL THEN TIMEDIFF('$shift_end', te.start_time)
+           ELSE NULL
+       END AS duration,
+       te.remarks 
+FROM time_entries te
+INNER JOIN activities a ON te.activity_id = a.activity_id
+WHERE te.employee_id = $user_id 
+  AND te.date = (
+      SELECT MAX(date)
+      FROM time_entries
+      WHERE employee_id = $user_id
+  )
+ORDER BY te.start_time DESC;
+        ";
+
+        return $this->conn->query($sql);
     }
+
     
 
     public function get_specific_activity($entry_id){
@@ -169,6 +173,28 @@ class Employee extends Database {
             die("Error retrieving time entry data: " . $this->conn->error);
         }
     }
+    public function get_ShiftActive() {
+        $employee_id = $_SESSION['user_id'];
+
+        $sql = "
+            SELECT shift_end 
+            FROM shifts 
+            WHERE employee_id = $employee_id 
+            ORDER BY shift_date DESC, shift_start DESC 
+            LIMIT 1
+        ";
+
+        $result = $this->conn->query($sql);
+
+        if ($result && $result->num_rows > 0) {
+            $shift = $result->fetch_assoc();
+            return empty($shift['shift_end']); // true if still in shift
+        }
+
+        return false; // No shift found
+    }
+
+
 
     public function add_activity_remark($activity_id, $remarks) {
         session_start();

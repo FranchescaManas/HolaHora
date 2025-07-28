@@ -71,6 +71,7 @@ include "view-remark-modal.php";
                 <table class="table table-striped table-hover mb-0" >
                     <thead class="table-dark">
                         <th>Activity </th>
+                        <th>Date </th>
                         <th>Start Time</th>
                         <th>End Time</th>
                         <th>Duration</th>
@@ -82,6 +83,7 @@ include "view-remark-modal.php";
                             <?php while ($log = $activities->fetch_assoc()) { ?>
                                 <tr>
                                     <td><?= $log['activity_name'] ?></td>
+                                    <td><?= $log['date'] ?></td>
                                     <td><?= $log['start_time'] ?></td>
                                     <td><?= $log['end_time'] ?? 'Ongoing' ?></td>
                                     <td><?= $log['duration'] ?? 'In Progress' ?></td>

@@ -21,7 +21,7 @@ include '../../classes/User.php';
 include '../shared/view-remark-modal.php';
 
 $user = new User;
-
+$employee = new Employee; 
 
 ?>
 
@@ -42,7 +42,8 @@ $user = new User;
                             <div class="d-flex flex-column " style="height:57vh">
                             <?php
                             $activities = $user->get_activity();
-                            
+                            $isShiftActive = $employee->get_ShiftActive(); // true or false
+                            print($isShiftActive ? 'true' : 'false');
                             
                             ?>
                                 <div class="align-items-start">
@@ -60,8 +61,10 @@ $user = new User;
                                 
                                 <div class="mt-auto">
                                     
-                                    <button type="submit" class="form-control btn btn-success mb-2" name="btn_shift" value = "1">Start Shift</button>
-                                    <button type="submit" class="form-control btn btn-danger" name="btn_shift" value = "0">End Shift</button>
+                                    <button type="submit" class="form-control btn btn-success mb-2" name="btn_shift" value = "1" 
+                                    <?= $isShiftActive ? 'disabled' : '' ?>>Start Shift</button>
+                                    <button type="submit" class="form-control btn btn-danger" name="btn_shift" value = "0"
+                                     <?= !$isShiftActive ? 'disabled' : '' ?>>End Shift</button>
                                 </div>
                             </div>
                         </form>
@@ -79,11 +82,13 @@ $user = new User;
                             </thead>
                             <tbody>
                                 <?php 
-                                 $employee = new Employee; 
+                                 
 
                                  $activities = $employee->get_activities();
                                 if ($activities) { ?>
-                                    <?php while ($log = $activities->fetch_assoc()) { ?>
+                                    <?php while ($log = $activities->fetch_assoc()) { 
+                                        ?>
+                                        
                                         <tr>
                                             <td><?= $log['activity_name'] ?></td>
                                             <td><?= $log['start_time'] ?></td>

@@ -24,7 +24,7 @@ session_start();
 
    $admin = new Admin;
    
-   include "add-employee-modal.php";
+   // include "add-employee-modal.php";
 
    // $team_employees = $admin->get_team_employees();
    $employee_list = $admin->get_employee_list();
@@ -55,7 +55,7 @@ session_start();
       
          
          <div class="row justify-content-end mb-2">
-            <button class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">Add Employee</button>
+            <button class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">Create Employee</button>
             <div class="dropdown w-auto px-0 ms-2">
                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                   <i class="fa-solid fa-filter"></i>
@@ -125,9 +125,9 @@ session_start();
                   ?>
                   <tr data-user-id="<?=$row['user_id'];?>">
                      <td class="align-middle"><?= $row['firstname']. ' ' . $row['lastname']?></td>
-                     <td class="align-middle"><?= $row['manager_firstname']. ' ' . $row['manager_lastname']?></td>
                      <td class="align-middle"><?= $row['position']?></td>
                      <td class="align-middle"><?= $row['team']?></td>
+                     <td class="align-middle"><?= $row['manager_firstname']. ' ' . $row['manager_lastname']?></td>
                      <td class="align-middle"></td>
                      <td>
                         <!-- View button -->
@@ -151,7 +151,7 @@ session_start();
                         </button>
 
                      <!-- TODO: DELETE BUTTON SHOULD REMOVE EMPLOYEE FROM THE TEAM, NOT FROM THE DATABASE -->
-                            <a href="../../actions/manager/remove-employee.php?user_id=<?=$row['user_id']?>"
+                            <a href="../../actions/admin/delete-employee.php?user_id=<?=$row['user_id']?>"
                               class="btn bg-none border-0">
                                  <i class="fa-solid fa-trash"></i>
                             </a> 

@@ -152,74 +152,77 @@ class User extends Database {
     }
     
     // TODO: Fix nagative values when another day starts
-   public function get_activity_dashboard() {
-    $user_id = $_SESSION['user_id'];
-    $role = $_SESSION['role'];
+    public function get_activity_dashboard() {
+        $user_id = $_SESSION['user_id'];
+        $role = $_SESSION['role'];
 
-    // Cross-midnight duration calculation
-    $duration_sql = "CASE 
-                        WHEN te.end_time > te.start_time 
-                            THEN SEC_TO_TIME(TIMESTAMPDIFF(SECOND, te.start_time, te.end_time))
-                        ELSE SEC_TO_TIME(TIMESTAMPDIFF(SECOND, te.start_time, DATE_ADD(te.end_time, INTERVAL 1 DAY)))
-                     END AS duration";
+        // Cross-midnight duration calculation
+        $duration_sql = "CASE 
+                            WHEN te.end_time > te.start_time 
+                                THEN SEC_TO_TIME(TIMESTAMPDIFF(SECOND, te.start_time, te.end_time))
+                            ELSE SEC_TO_TIME(TIMESTAMPDIFF(SECOND, te.start_time, DATE_ADD(te.end_time, INTERVAL 1 DAY)))
+                        END AS duration";
 
-    if ($role == 'E') {
-        $sql = "SELECT 
-                    te.entry_id, 
-                    a.activity_name, 
-                    te.start_time, 
-                    te.end_time, 
-                    $duration_sql
-                FROM time_entries te
-                JOIN activities a ON te.activity_id = a.activity_id
-                WHERE te.end_time IS NOT NULL 
-                  AND te.start_time BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND LAST_DAY(CURDATE())
-                  AND te.employee_id = $user_id
-                  AND a.isBillable = 1";
-    } elseif ($role == 'A') {
-        $sql = "SELECT 
-                    te.entry_id, 
-                    a.activity_name, 
-                    te.start_time, 
-                    te.end_time, 
-                    $duration_sql
-                FROM time_entries te
-                JOIN activities a ON te.activity_id = a.activity_id
-                WHERE te.end_time IS NOT NULL 
-                  AND te.start_time BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND LAST_DAY(CURDATE())
-                  AND a.isBillable = 1";
-    } elseif ($role == 'M') {
-        $sql = "SELECT 
-                    te.entry_id, 
-                    a.activity_name, 
-                    te.start_time, 
-                    te.end_time, 
-                    $duration_sql
-                FROM time_entries te
-                JOIN activities a ON te.activity_id = a.activity_id
-                JOIN employees e ON te.employee_id = e.user_id
-                JOIN teams t ON e.team_id = t.team_id
-                WHERE te.end_time IS NOT NULL 
-                  AND t.user_id = $user_id
-                  AND te.start_time BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND LAST_DAY(CURDATE())
-                  AND a.isBillable = 1";
+        if ($role == 'E') {
+            $sql = "SELECT 
+                        te.entry_id, 
+                        a.activity_name, 
+                        te.start_time, 
+                        te.end_time,
+                        te.date, 
+                        $duration_sql
+                    FROM time_entries te
+                    JOIN activities a ON te.activity_id = a.activity_id
+                    WHERE te.end_time IS NOT NULL 
+                    AND te.start_time BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND LAST_DAY(CURDATE())
+                    AND te.employee_id = $user_id
+                    AND a.isBillable = 1";
+        } elseif ($role == 'A') {
+            $sql = "SELECT 
+                        te.entry_id, 
+                        a.activity_name, 
+                        te.start_time, 
+                        te.end_time,
+                        te.date, 
+                        $duration_sql
+                    FROM time_entries te
+                    JOIN activities a ON te.activity_id = a.activity_id
+                    WHERE te.end_time IS NOT NULL 
+                    AND te.start_time BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND LAST_DAY(CURDATE())
+                    AND a.isBillable = 1";
+        } elseif ($role == 'M') {
+            $sql = "SELECT 
+                        te.entry_id, 
+                        a.activity_name, 
+                        te.start_time, 
+                        te.end_time,
+                        te.date, 
+                        $duration_sql
+                    FROM time_entries te
+                    JOIN activities a ON te.activity_id = a.activity_id
+                    JOIN employees e ON te.employee_id = e.user_id
+                    JOIN teams t ON e.team_id = t.team_id
+                    WHERE te.end_time IS NOT NULL 
+                    AND t.user_id = $user_id
+                    AND te.start_time BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND LAST_DAY(CURDATE())
+                    AND a.isBillable = 1";
+        }
+
+        $result = $this->conn->query($sql);
+
+        if ($result) {
+            return $result; // or fetch results into array if preferred
+        } else {
+            die("Error retrieving time entry data: " . $this->conn->error);
+        }
     }
-
-    $result = $this->conn->query($sql);
-
-    if ($result) {
-        return $result; // or fetch results into array if preferred
-    } else {
-        die("Error retrieving time entry data: " . $this->conn->error);
-    }
-}
 
 
     public function get_live_activities() {
         $user_id = $_SESSION['user_id'];
         $role = $_SESSION['role'];
 
-        if($role == 'A'){
+        if ($role == 'A') {
             $sql = "SELECT 
                         e.user_id,
                         CONCAT(u.firstname, ' ', u.lastname) AS name, 
@@ -227,7 +230,7 @@ class User extends Database {
                         t.team_name, 
                         d.department_name, 
                         a.activity_name,
-                        TIMESTAMPDIFF(MINUTE, te.start_time, NOW()) AS duration
+                        GREATEST(TIMESTAMPDIFF(MINUTE, te.start_time, NOW()), 0) AS duration
                     FROM employees e
                     LEFT JOIN users u ON e.user_id = u.user_id 
                     LEFT JOIN teams t ON e.team_id = t.team_id 
@@ -235,12 +238,9 @@ class User extends Database {
                     LEFT JOIN time_entries te ON e.user_id = te.employee_id 
                     LEFT JOIN activities a ON te.activity_id = a.activity_id 
                     WHERE u.online = 1 
-                    AND te.start_time = (
-                        SELECT MAX(start_time) 
-                        FROM time_entries 
-                        WHERE employee_id = e.user_id
-                    )";
-        }elseif($role == 'M'){
+                    AND te.start_time IS NOT NULL
+                    AND te.end_time IS NULL";
+        } elseif ($role == 'M') {
             $sql = "SELECT 
                         e.user_id,
                         CONCAT(u.firstname, ' ', u.lastname) AS name, 
@@ -248,7 +248,7 @@ class User extends Database {
                         t.team_name, 
                         d.department_name, 
                         a.activity_name,
-                        TIMESTAMPDIFF(MINUTE, te.start_time, NOW()) AS duration
+                        GREATEST(TIMESTAMPDIFF(MINUTE, te.start_time, NOW()), 0) AS duration
                     FROM employees e
                     LEFT JOIN users u ON e.user_id = u.user_id 
                     LEFT JOIN teams t ON e.team_id = t.team_id 
@@ -257,23 +257,23 @@ class User extends Database {
                     LEFT JOIN activities a ON te.activity_id = a.activity_id 
                     WHERE t.user_id = $user_id
                     AND u.online = 1 
-                    AND te.start_time = (
-                        SELECT MAX(start_time) 
-                        FROM time_entries 
-                        WHERE employee_id = e.user_id
-                    )";
+                    AND te.start_time IS NOT NULL
+                    AND te.end_time IS NULL";
         }
-    
+
         if ($result = $this->conn->query($sql)) {
             return $result;
         } else {
             die("Error retrieving live activities: " . $this->conn->error);
         }
     }
+
+
     
     public function get_employee_details($user_id){
   
-        $sql = "SELECT 
+        $sql = "
+                SELECT 
                     u.user_id,
                     u.firstname, 
                     u.lastname, 
@@ -287,9 +287,10 @@ class User extends Database {
                     m.lastname AS manager_lastname
                 FROM users u
                 INNER JOIN employees e ON u.user_id = e.user_id
-                INNER JOIN teams t ON e.team_id = t.team_id
+                LEFT JOIN teams t ON e.team_id = t.team_id
                 LEFT JOIN users m ON t.user_id = m.user_id
-                WHERE u.user_id = $user_id;";
+                WHERE u.user_id = $user_id
+            ";
         $result = $this->conn->query($sql);
 
         if ($result->num_rows > 0) {

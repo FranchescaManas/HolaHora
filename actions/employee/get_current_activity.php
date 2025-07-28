@@ -11,7 +11,8 @@ if ($result->num_rows > 0) {
     echo json_encode([
         'success' => true,
         'activity' => $activity['activity_name'],
-        'start_time' => $activity['start_time']
+        'start_time' => $activity['start_time'],
+        'end_time' => $activity['end_time'],
     ]);
 } else {
     echo json_encode([

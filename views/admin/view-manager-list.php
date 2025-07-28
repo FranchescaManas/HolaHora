@@ -24,13 +24,13 @@ session_start();
 
    $admin = new Admin;
    
-   include "add-employee-modal.php";
+   // include "add-employee-modal.php";
 
    // $team_employees = $admin->get_team_employees();
    $manager_list = $admin->get_manager_list();
 
    $managers = [];
-   $positions = [];
+   $departments = [];
    $teams = [];
 
 
@@ -39,8 +39,8 @@ session_start();
       $department = $row['department'];
       $team = $row['team'] ?? 'Unassigned';
 
-       if (!in_array($department, $team)) {
-        $departments[] = $team;
+       if (!in_array($department, $departments)) {
+        $departments[] = $department;
       }
       if (!in_array($team, $teams)) {
          $teams[] = $team;
@@ -55,7 +55,7 @@ session_start();
       
          
          <div class="row justify-content-end mb-2">
-            <button class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">Add Employee</button>
+            <button class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">Create Manager</button>
             <div class="dropdown w-auto px-0 ms-2">
                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                   <i class="fa-solid fa-filter"></i>
@@ -70,9 +70,9 @@ session_start();
                      </select>
                   </div>
                   <div class="mb-3">
-                     <label for="exampleDropdownFormEmail2" class="form-label">Position</label>
+                     <label for="exampleDropdownFormEmail2" class="form-label">Department</label>
                      <select name="team_filter" id="" class="form-select">
-                        <option value="" hidden>Select Position</option>
+                        <option value="" hidden>Select Department</option>
                         <?php
                           $departments = [];
                            foreach ($managers as $row): 
@@ -114,7 +114,6 @@ session_start();
                <thead class="table-dark">
                   <th>Manager Name</th>
                   <th>Team</th>
-                  <th>Manager</th>
                   <th>Department</th>
                   <th></th>
                </thead>
@@ -124,10 +123,8 @@ session_start();
                   ?>
                   <tr data-user-id="<?=$row['user_id'];?>">
                      <td class="align-middle"><?= $row['firstname']. ' ' . $row['lastname']?></td>
-                     <td class="align-middle"><?= $row['manager_firstname']. ' ' . $row['manager_lastname']?></td>
-                     <td class="align-middle"><?= $row['position']?></td>
                      <td class="align-middle"><?= $row['team']?></td>
-                     <td class="align-middle"></td>
+                     <td class="align-middle"><?= $row['department']?></td>
                      <td>
                         <!-- View button -->
                         <button 
@@ -150,7 +147,7 @@ session_start();
                         </button>
 
                      <!-- TODO: DELETE BUTTON SHOULD REMOVE EMPLOYEE FROM THE TEAM, NOT FROM THE DATABASE -->
-                            <a href="../../actions/manager/remove-employee.php?user_id=<?=$row['user_id']?>"
+                            <a href="../../actions/admin/delete-manager.php?user_id=<?=$row['user_id']?>"
                               class="btn bg-none border-0">
                                  <i class="fa-solid fa-trash"></i>
                             </a> 

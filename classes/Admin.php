@@ -294,6 +294,63 @@ class Admin extends Database {
         }
     }
 
+    public function delete_employee($employee_id) {
+        $employee_id = intval($employee_id); // sanitize input
+
+        // Step 1: Delete from time_entries using JOIN on employees
+        // $sql_time_entries = "
+        //     DELETE FROM time_entries 
+        //     WHERE employee_id = $employee_id
+        // ";
+        // if (!$this->conn->query($sql_time_entries)) {
+        //     die("Error deleting time entries: " . $this->conn->error);
+        // }
+
+        // Step 2: Delete from employees using user_id
+        $sql_employees = "
+            DELETE FROM employees WHERE user_id = $employee_id
+        ";
+        if (!$this->conn->query($sql_employees)) {
+            die("Error deleting employee record: " . $this->conn->error);
+        }
+
+        // Step 3: Delete from users using user_id
+        $sql_users = "
+            DELETE FROM users WHERE user_id = $employee_id
+        ";
+        if ($this->conn->query($sql_users)) {
+            header("location: ../../views/admin/view-employee-list.php");
+            exit;
+        } else {
+            die("Error deleting user: " . $this->conn->error);
+        }
+    }
+
+    public function delete_manager($manager_id) {
+        $manager_id = intval($manager_id); // Sanitize input
+
+        // Step 1: Set user_id to NULL in teams where this manager is assigned
+        $sql_update_teams = "
+            UPDATE teams SET user_id = NULL WHERE user_id = $manager_id
+        ";
+        if (!$this->conn->query($sql_update_teams)) {
+            die("Error updating teams: " . $this->conn->error);
+        }
+
+        // Step 2: Delete the manager from users
+        $sql_delete_user = "
+            DELETE FROM users WHERE user_id = $manager_id
+        ";
+        if ($this->conn->query($sql_delete_user)) {
+            header("Location: ../../views/admin/view-manager-list.php");
+            exit;
+        } else {
+            die("Error deleting user: " . $this->conn->error);
+        }
+    }
+
+
+
     public function delete_department($department_id){
         $sql = "DELETE from departments WHERE `department_id` = $department_id";
 
@@ -409,7 +466,7 @@ class Admin extends Database {
         }
     }
 
-    public function get_managers_list(){
+    public function get_manager_list(){
         $sql = "SELECT 
                     u.user_id,
                     u.firstname, 
@@ -419,14 +476,12 @@ class Admin extends Database {
                     u.contact_no,
                     t.team_name AS team,
                     t.department_id,
-                    d.department_name AS department,
-                    m.firstname AS manager_firstname,
-                    m.lastname AS manager_lastname
+                    d.department_name AS department
                 FROM users u
-                INNER JOIN teams t ON u.user_id = t.user_id
-                INNER JOIN departments d ON t.department_id = d.department_id
-                LEFT JOIN users m ON t.user_id = m.user_id
-                WHERE u.role = 'M';";
+                LEFT JOIN teams t ON u.user_id = t.user_id
+                LEFT JOIN departments d ON t.department_id = d.department_id
+                WHERE u.role = 'M';
+                ";
 
         if($result = $this->conn->query($sql)){
             return $result;
@@ -437,23 +492,23 @@ class Admin extends Database {
 
     public function get_employee_list(){
         $sql = "SELECT 
-                    u.user_id,
-                    u.firstname, 
-                    u.lastname, 
-                    u.email, 
-                    u.username, 
-                    u.contact_no, 
-                    u.role,
-                    e.position,
-                    e.team_id,
-                    t.team_name AS team,
-                    m.firstname AS manager_firstname,
-                    m.lastname AS manager_lastname
-                FROM users u
-                INNER JOIN employees e ON u.user_id = e.user_id
-                INNER JOIN teams t ON e.team_id = t.team_id
-                LEFT JOIN users m ON t.user_id = m.user_id
-                WHERE u.role = 'E';";
+            u.user_id,
+            u.firstname, 
+            u.lastname, 
+            u.email, 
+            u.username, 
+            u.contact_no, 
+            u.role,
+            e.position,
+            e.team_id,
+            t.team_name AS team,
+            m.firstname AS manager_firstname,
+            m.lastname AS manager_lastname
+        FROM users u
+        INNER JOIN employees e ON u.user_id = e.user_id
+        LEFT JOIN teams t ON e.team_id = t.team_id
+        LEFT JOIN users m ON t.user_id = m.user_id
+        WHERE u.role = 'E';";
 
         if($result = $this->conn->query($sql)){
             return $result;
