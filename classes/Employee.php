@@ -30,17 +30,50 @@ class Employee extends Database {
                 die("Error starting shift: " . $this->conn->error);
             }
         } else { // End of shift
-            // Update the last shift record with the end time
-            $sql = "UPDATE shifts 
-                    SET `shift_end` = '$current_time' 
-                    WHERE `employee_id` = $user_id 
-                    AND `shift_date` = '$current_date' 
-                    AND `shift_end` IS NULL 
-                    ORDER BY `shift_start` DESC LIMIT 1";
-            $update_result = $this->conn->query($sql);
-    
-            if (!$update_result) {
-                die("Error ending shift: " . $this->conn->error);
+             // Step 1: Get the latest shift without an end
+            $sql = "SELECT shift_start 
+                    FROM shifts 
+                    WHERE employee_id = $user_id 
+                    AND shift_date = '$current_date' 
+                    AND shift_end IS NULL 
+                    ORDER BY shift_start DESC 
+                    LIMIT 1";
+            
+            $result = $this->conn->query($sql);
+
+            if ($result && $result->num_rows > 0) {
+                $shift = $result->fetch_assoc();
+                $latest_shift_start = $shift['shift_start'];
+
+                // Step 2: Update that shift's end time
+                $sqlUpdateShift = "UPDATE shifts 
+                                SET shift_end = '$current_time' 
+                                WHERE employee_id = $user_id 
+                                    AND shift_date = '$current_date' 
+                                    AND shift_start = '$latest_shift_start'";
+                $updateShift = $this->conn->query($sqlUpdateShift);
+
+                if (!$updateShift) {
+                    die("Error ending shift: " . $this->conn->error);
+                }
+
+                // Step 3: Update the latest time entry with no end_time (in this shift)
+                $sqlUpdateEntry = "UPDATE time_entries 
+                                SET end_time = '$current_time' 
+                                WHERE employee_id = $user_id 
+                                    AND date = '$current_date' 
+                                    AND start_time >= '$latest_shift_start' 
+                                    AND end_time IS NULL 
+                                ORDER BY start_time DESC 
+                                LIMIT 1";
+
+                $updateEntry = $this->conn->query($sqlUpdateEntry);
+
+                if (!$updateEntry) {
+                    die("Error updating last activity log: " . $this->conn->error);
+                }
+            } else {
+                echo "No active shift found to end.";
             }
         }
     
@@ -121,25 +154,23 @@ class Employee extends Database {
 
         // Define fallback end_time if not set
         $fallback_end = $shift_end ? "'$shift_end'" : "NULL";
-        $sql = "
-           SELECT te.entry_id, te.employee_id, te.activity_id, a.activity_name, a.isBillable, 
-       te.date, te.start_time, te.end_time,
-       CASE 
-           WHEN te.end_time IS NOT NULL THEN TIMEDIFF(te.end_time, te.start_time)
-           WHEN '$shift_end' IS NOT NULL THEN TIMEDIFF('$shift_end', te.start_time)
-           ELSE NULL
-       END AS duration,
-       te.remarks 
-FROM time_entries te
-INNER JOIN activities a ON te.activity_id = a.activity_id
-WHERE te.employee_id = $user_id 
-  AND te.date = (
-      SELECT MAX(date)
-      FROM time_entries
-      WHERE employee_id = $user_id
-  )
-ORDER BY te.start_time DESC;
-        ";
+        $sql = "SELECT te.entry_id, te.employee_id, te.activity_id, a.activity_name, a.isBillable, 
+                    te.date, te.start_time, te.end_time,
+                    CASE 
+                    WHEN te.end_time IS NOT NULL THEN TIME_FORMAT(TIMEDIFF(te.end_time, te.start_time), '%H:%i:%s')
+                    WHEN '$shift_end' IS NOT NULL THEN TIME_FORMAT(TIMEDIFF('$shift_end', te.start_time), '%H:%i:%s')
+                    ELSE NULL
+                END AS duration,
+                    te.remarks 
+                FROM time_entries te
+                INNER JOIN activities a ON te.activity_id = a.activity_id
+                WHERE te.employee_id = $user_id 
+                AND te.date = (
+                    SELECT MAX(date)
+                    FROM time_entries
+                    WHERE employee_id = $user_id
+                )
+                ORDER BY te.start_time DESC;";
 
         return $this->conn->query($sql);
     }

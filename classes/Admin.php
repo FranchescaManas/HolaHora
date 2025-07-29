@@ -92,7 +92,7 @@ class Admin extends Database {
             $user_id = $this->conn->insert_id; // Get the newly inserted user ID
     
             // Only insert into teams if team_id or department_id is provided
-            if ($team_id !== null || $department_id !== null) {
+            if ($team_id !== null && $department_id !== null) {
                 $sql_team = "INSERT INTO teams (`user_id`, `team_id`, `department_id`) 
                              VALUES ($user_id, " . ($team_id ?? 'NULL') . ", " . ($department_id ?? 'NULL') . ")";
                 

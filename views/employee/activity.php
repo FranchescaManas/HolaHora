@@ -87,6 +87,7 @@ $employee = new Employee;
                                  $activities = $employee->get_activities();
                                 if ($activities) { ?>
                                     <?php while ($log = $activities->fetch_assoc()) { 
+                                        print_r($log);
                                         ?>
                                         
                                         <tr>
