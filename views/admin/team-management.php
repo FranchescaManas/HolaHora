@@ -50,11 +50,11 @@ include 'create-employee-modal.php';
     <div class="row justify-content-end mb-2">
         <button type="button" class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#create-manager-modal">
             <!-- <i class="fa-solid fa-user-tie"></i> -->
-            <i class="fa-solid fa-user-tie me-1"></i> Add Manager
+            <i class="fa-solid fa-user-tie me-1"></i> Create Manager
         </button>
         <button type="button" class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#create-employee-modal">
             <!-- <i class="fa-solid fa-user-plus"></i> -->
-            <i class="fa-solid fa-user-plus me-1"></i> Add Employee
+            <i class="fa-solid fa-user-plus me-1"></i> Create Employee
         </button>
         <a href="create-team.php" class="btn btn-primary ms-2 w-auto">
             <!-- <i class="fa-solid fa-users-line"></i> -->

@@ -138,13 +138,17 @@ class Admin extends Database {
     public function create_team($request) {
         $team_name = $request['team_name'];
         $status = $request['status'];
-        $department_id = $request['department'];
-        $manager_id = $request['manager'];
+        $department_id = !empty($request['department']) ? $request['department'] : "NULL";
+        $manager_id = !empty($request['manager']) ? $request['manager'] : "NULL";
+
         $employees = array_filter($request['employees']); // This is already an array
         
         // Insert new team and get the inserted team's ID
         $sql = "INSERT INTO teams (`user_id`, `department_id`, `team_name`, `status`) 
-                VALUES ($manager_id, $department_id, '$team_name', '$status')";
+        VALUES (" . ($manager_id === "NULL" ? "NULL" : $manager_id) . ", 
+                " . ($department_id === "NULL" ? "NULL" : $department_id) . ", 
+                '$team_name', 
+                '$status')";
     
         if ($this->conn->query($sql)) {
             $team_id = $this->conn->insert_id; // Get last inserted ID

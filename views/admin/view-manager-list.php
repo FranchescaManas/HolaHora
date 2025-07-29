@@ -55,7 +55,7 @@ session_start();
       
          
          <div class="row justify-content-end mb-2">
-            <button class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">Create Manager</button>
+            <!-- <button class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">Create Manager</button> -->
             <div class="dropdown w-auto px-0 ms-2">
                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                   <i class="fa-solid fa-filter"></i>
@@ -127,24 +127,24 @@ session_start();
                      <td class="align-middle"><?= $row['department']?></td>
                      <td>
                         <!-- View button -->
-                        <button 
+                        <!-- <button 
                         type="button" 
                         class="btn btn-sm view-employee" 
                         data-user-id="<?= $row['user_id']; ?>" 
                         data-bs-toggle="modal" 
                         data-bs-target="#view-employee-modal">
                         <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                        </button>
+                        </button> -->
 
                         <!-- Edit button -->
-                        <button 
+                        <!-- <button 
                         type="button" 
                         class="btn btn-sm view-employee" 
                         data-user-id="<?= $row['user_id']; ?>" 
                         data-bs-toggle="modal" 
                         data-bs-target="#edit-employee-modal">
                         <i class="fa-regular fa-pen-to-square"></i>
-                        </button>
+                        </button> -->
 
                      <!-- TODO: DELETE BUTTON SHOULD REMOVE EMPLOYEE FROM THE TEAM, NOT FROM THE DATABASE -->
                             <a href="../../actions/admin/delete-manager.php?user_id=<?=$row['user_id']?>"
