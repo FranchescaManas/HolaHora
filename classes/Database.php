@@ -2,10 +2,10 @@
 
     class Database {
         private $server_name = "localhost";
-        // private $db_username = "don";
-        // private $db_password = "1M@gic123456!";
-        private $db_username = "root";
-        private $db_password = "";
+        private $db_username = "don";
+        private $db_password = "1M@gic123456!";
+        // private $db_username = "root";
+        // private $db_password = "";
         private $db_name = "don_hola_hora";
 
         public function __construct(){
