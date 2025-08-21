@@ -138,7 +138,7 @@ class Employee extends Database {
         $current_date = date("Y-m-d");
 
         // Get the latest shift for today
-        $sql = "SELECT shift_start, shift_end FROM shifts 
+        $sql = "SELECT shift_start, shift_end, shift_date FROM shifts 
                 WHERE employee_id = $user_id 
                 AND shift_date = '$current_date' 
                 ORDER BY shift_start DESC 
@@ -173,6 +173,8 @@ class Employee extends Database {
                 ORDER BY te.start_time DESC;";
 
         return $this->conn->query($sql);
+        
+
     }
 
     

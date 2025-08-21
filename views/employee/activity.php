@@ -20,6 +20,7 @@ include '../../classes/Employee.php';
 include '../../classes/User.php';
 include '../shared/view-remark-modal.php';
 
+
 $user = new User;
 $employee = new Employee; 
 
@@ -43,6 +44,7 @@ $employee = new Employee;
                             <?php
                             $activities = $user->get_activity();
                             $isShiftActive = $employee->get_ShiftActive(); // true or false
+                            
                             print($isShiftActive ? 'true' : 'false');
                             
                             ?>
@@ -61,10 +63,16 @@ $employee = new Employee;
                                 
                                 <div class="mt-auto">
                                     
-                                    <button type="submit" class="form-control btn btn-success mb-2" name="btn_shift" value = "1" 
-                                    <?= $isShiftActive ? 'disabled' : '' ?>>Start Shift</button>
-                                    <button type="submit" class="form-control btn btn-danger" name="btn_shift" value = "0"
-                                     <?= !$isShiftActive ? 'disabled' : '' ?>>End Shift</button>
+                                    <button type="button" class="form-control btn btn-success mb-2" 
+                                        onclick="submitShift(1)" <?= $isShiftActive ? 'disabled' : '' ?>>
+                                        Start Shift
+                                    </button>
+
+                                    <button type="button" class="form-control btn btn-danger" 
+                                        onclick="submitShift(0)" <?= !$isShiftActive ? 'disabled' : '' ?>>
+                                        End Shift
+                                    </button>
+
                                 </div>
                             </div>
                         </form>
@@ -74,6 +82,7 @@ $employee = new Employee;
                             <thead class="table-dark">
                                 <tr>
                                     <th>Activity Name</th>
+                                    <th>Date</th>
                                     <th>Start Time</th>
                                     <th>End Time</th>
                                     <th>Duration</th>
@@ -87,11 +96,12 @@ $employee = new Employee;
                                  $activities = $employee->get_activities();
                                 if ($activities) { ?>
                                     <?php while ($log = $activities->fetch_assoc()) { 
-                                        print_r($log);
+                                        // print_r($log);
                                         ?>
                                         
                                         <tr>
                                             <td><?= $log['activity_name'] ?></td>
+                                            <td><?= $log['date'] ?></td>
                                             <td><?= $log['start_time'] ?></td>
                                             <td><?= $log['end_time'] ?? 'Ongoing' ?></td>
                                             <td><?= $log['duration'] ?? 'In Progress' ?></td>
@@ -117,7 +127,9 @@ $employee = new Employee;
         </div> 
     </div>
 </div>
-
+<?php
+include './shift-modal.php';
+?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="../../assets/js/employee/activity.js"></script>
 <script src="../../assets/js/shared/activity-modal.js"></script>
