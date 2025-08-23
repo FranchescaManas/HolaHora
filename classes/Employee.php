@@ -11,7 +11,7 @@ class Employee extends Database {
         $current_time = $request['time']; // Get current server time
         $current_date = date("Y-m-d"); // Get current date
         
-    
+        
         // Update the user's online status
         $sql = "UPDATE users SET `online` = $shift_type WHERE `user_id` = $user_id";
         $result = $this->conn->query($sql);
@@ -121,10 +121,23 @@ class Employee extends Database {
                            WHERE entry_id = $entry_id";
             $this->conn->query($update_sql);
         }
-    
+
+        $sql = "
+            SELECT * 
+            FROM shifts 
+            WHERE employee_id = $user_id 
+            ORDER BY shift_date DESC, shift_start DESC 
+            LIMIT 1
+        ";
+
+        $result = $this->conn->query($sql);
+        if ($result && $result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $shift_id = $row['shift_id'];
+        }
         // Insert the new activity
-        $insert_sql = "INSERT INTO time_entries (`employee_id`, `activity_id`, `date`, `start_time`) 
-                       VALUES ($user_id, $activity_id, '$current_date', '$current_time')";
+        $insert_sql = "INSERT INTO time_entries (`employee_id`, `activity_id`, `date`, `start_time`, `shift_id`) 
+                       VALUES ($user_id, $activity_id, '$current_date', '$current_time', $shift_id)";
         $this->conn->query($insert_sql);
     
         // Redirect after success
@@ -192,11 +205,24 @@ class Employee extends Database {
 
     public function get_current_activity() {
         $user_id = $_SESSION['user_id'];
-    
+        $sql = "
+            SELECT shift_id
+            FROM shifts
+            WHERE employee_id = $user_id
+            AND shift_end IS NULL
+            ORDER BY shift_date DESC, shift_start DESC
+            LIMIT 1
+        ";
+
+        $result = $this->conn->query($sql);
+        $row = $result->fetch_assoc();
+        $shift_id = $row['shift_id'];
+
         $sql = "SELECT te.*, a.activity_name 
                 FROM time_entries te 
                 LEFT JOIN activities a ON te.activity_id = a.activity_id 
-                WHERE te.employee_id = $user_id 
+                WHERE te.employee_id = $user_id
+                AND te.shift_id = $shift_id
                 ORDER BY te.start_time DESC 
                 LIMIT 1";
     

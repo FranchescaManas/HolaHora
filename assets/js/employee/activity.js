@@ -6,6 +6,12 @@ $(document).ready(function () {
     $("#activitySelect").click(function () {
         var selectedActivity = $("#activityDropdown option:selected").text();
         $("#activityTitle").text(selectedActivity);
+        
+    });
+    
+     $("#shift-ok").click(function () {
+
+        location.reload();
     });
 
     // Update time every second
@@ -21,8 +27,8 @@ function submitShift(value) {
 
     // 2. Set modal message immediately
     let msg = (value == 1)
-        ? "✅ Shift has started, kindly select an activity."
-        : "✅ Shift has ended. Enjoy your day, thank you!";
+        ? "Your shift has started. Please select an activity to begin."
+        : "Your shift has ended. Thank you for your hard work today!";
     document.getElementById("shiftMessage").textContent = msg;
 
     // 3. Show modal immediately
@@ -39,7 +45,7 @@ function submitShift(value) {
             ajax: 1 // flag so PHP knows it's AJAX
         },
         success: function(response) {
-            location.reload();
+            // location.reload();
             // console.log("Backend response:", response);
         },
         error: function(xhr, status, error) {
@@ -60,24 +66,31 @@ function submitShift(value) {
  * Fetches the user's current activity from the server.
  */
 function fetchCurrentActivity() {
-    $.ajax({
-        url: "../../actions/employee/get_current_activity.php",
-        method: "GET",
-        dataType: "json",
-        success: function (response) {
-            console.log("AJAX Success Response:", response); // Debugging log
+    let shift = $("#activityTitle").data("shift"); // get the data-shift attribute (0 or 1)
 
-            if (response.success) {
-                $("#activityTitle").text(response.activity);
-            } else {
-                $("#activityTitle").text("No activity selected");
+    if (shift == 1) {  
+        // Only fetch if shift is active
+        $.ajax({
+            url: "../../actions/employee/get_current_activity.php",
+            method: "GET",
+            dataType: "json",
+            success: function (response) {
+                console.log("AJAX Success Response:", response);
+
+                if (response.success) {
+                    $("#activityTitle").text(response.activity);
+                } else {
+                    $("#activityTitle").text("No activity selected");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error:", status, error);
+                console.log("Server Response:", xhr.responseText);
             }
-        },
-        error: function (xhr, status, error) {
-            console.error("AJAX Error:", status, error);
-            console.log("Server Response:", xhr.responseText); // Log raw response
-        }
-    });
+        });
+    } else {
+        console.log("Shift is not active, skipping fetch.");
+    }
 }
 
 

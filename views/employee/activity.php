@@ -23,6 +23,7 @@ include '../shared/view-remark-modal.php';
 
 $user = new User;
 $employee = new Employee; 
+$isShiftActive = $employee->get_ShiftActive(); // true or false
 
 ?>
 
@@ -30,7 +31,7 @@ $employee = new Employee;
     
        <div class="card w-75 my-auto mx-auto h-50">
             <div class="card-header bg-white">
-                <h1 class="display-5 text-center fw-bold mb-2" id="activityTitle">Select Current Activity</h1>
+                <h1 class="display-5 text-center fw-bold mb-2" id="activityTitle" data-shift="<?= $isShiftActive ? '1' : '0' ?>">Select Current Activity</h1>
 
             </div>
             <div class="card-body">
@@ -43,9 +44,8 @@ $employee = new Employee;
                             <div class="d-flex flex-column " style="height:57vh">
                             <?php
                             $activities = $user->get_activity();
-                            $isShiftActive = $employee->get_ShiftActive(); // true or false
                             
-                            print($isShiftActive ? 'true' : 'false');
+                            // print($isShiftActive ? 'true' : 'false');
                             
                             ?>
                                 <div class="align-items-start">
