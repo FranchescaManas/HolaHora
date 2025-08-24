@@ -158,9 +158,10 @@ class Admin extends Database {
             if(!empty($employees)){
                 foreach ($employees as $employee_id) {
                     $update_sql = "UPDATE employees SET `team_id` = $team_id WHERE `user_id` = $employee_id";
-                    echo "$update_sql";
+                    // echo "$update_sql";
                     if($this->conn->query($update_sql)){
-                        echo "added";
+                        // echo "added";
+                        header("location: ../../views/admin/team-management.php");
                     }else{
                         die("erorr:". $this->conn->error );
                     }
