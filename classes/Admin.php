@@ -85,8 +85,8 @@ class Admin extends Database {
         $department_id = isset($request['department']) && !empty($request['department']) ? (int) $request['department'] : null;
     
         // Insert user into the users table
-        $sql = "INSERT INTO users (`username`, `firstname`, `lastname`, `email`, `contact_no`, `password`, `role`, `status`, `admin_level`) 
-                VALUES ('$username', '$firstname', '$lastname', '$email', '$contact_no', '$password', 'Manager', 'Active', 1)";
+        $sql = "INSERT INTO users (`username`, `firstname`, `lastname`, `email`, `contact_no`, `password`, `role`, `status`, `admin_level`, `online`) 
+                VALUES ('$username', '$firstname', '$lastname', '$email', '$contact_no', '$password', 'Manager', 'Active', 1, 0)";
     
         if ($this->conn->query($sql)) {
             $user_id = $this->conn->insert_id; // Get the newly inserted user ID
