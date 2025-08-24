@@ -45,7 +45,7 @@ class Admin extends Database {
         $position = $request['position'];
         $password = password_hash($request['password'], PASSWORD_DEFAULT);
 
-        $sql = "INSERT INTO users (`username`, `firstname`, `lastname`, `email`, `contact_no`, `password`, `role`, `status`, `admin_level`) VALUES ('$username', '$firstname', '$lastname', '$email', '$contact_no', '$password', 'Employee', 'Active', 0)";
+        $sql = "INSERT INTO users (`username`, `firstname`, `lastname`, `email`, `contact_no`, `password`, `role`, `status`, `admin_level`, `online`) VALUES ('$username', '$firstname', '$lastname', '$email', '$contact_no', '$password', 'E', 'Active', 0, 0)";
 
         if($this->conn->query($sql)){
 
@@ -86,7 +86,7 @@ class Admin extends Database {
     
         // Insert user into the users table
         $sql = "INSERT INTO users (`username`, `firstname`, `lastname`, `email`, `contact_no`, `password`, `role`, `status`, `admin_level`, `online`) 
-                VALUES ('$username', '$firstname', '$lastname', '$email', '$contact_no', '$password', 'Manager', 'Active', 1, 0)";
+                VALUES ('$username', '$firstname', '$lastname', '$email', '$contact_no', '$password', 'M', 'Active', 1, 0)";
     
         if ($this->conn->query($sql)) {
             $user_id = $this->conn->insert_id; // Get the newly inserted user ID
