@@ -201,20 +201,7 @@ class Employee extends Database {
             die("Error retrieving time entry data. ".  $this->conn->error);
         }
     }
-     public function test() {
-        $user_id = $_SESSION['user_id'];
-        $sql = "
-            SELECT shift_id
-            FROM shifts
-            WHERE employee_id = $user_id
-            AND shift_end IS NULL
-            ORDER BY shift_date DESC, shift_start DESC
-            LIMIT 1
-        ";
-
-        $result = $this->conn->query($sql);
-        return $result->fetch_assoc();
-    }
+   
     public function get_current_activity() {
         $user_id = $_SESSION['user_id'];
         $sql = "

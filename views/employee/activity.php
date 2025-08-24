@@ -62,7 +62,7 @@ $isShiftActive = $employee->get_ShiftActive(); // true or false
                                 </div>
                                 
                                 <div class="mt-auto">
-                                    
+                                   
                                     <button type="button" class="form-control btn btn-success mb-2" 
                                         onclick="submitShift(1)" <?= $isShiftActive ? 'disabled' : '' ?>>
                                         Start Shift

@@ -1,7 +1,7 @@
 $(document).ready(function () {
     // Fetch current activity on page load
     fetchCurrentActivity();
-
+    
     // Update activity title when dropdown option is selected
     $("#activitySelect").click(function () {
         var selectedActivity = $("#activityDropdown option:selected").text();
@@ -53,12 +53,6 @@ function submitShift(value) {
         }
     });
 }
-
-
-
-
-
-
 
 
 
