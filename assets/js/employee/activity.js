@@ -20,39 +20,6 @@ $(document).ready(function () {
 
 });
 
-function submitShift(value) {
-    // 1. Get the current time from the <p> element
-    let time = document.getElementById("currentTime").textContent;
-    console.log("time", time); // should now print actual time
-
-    // 2. Set modal message immediately
-    let msg = (value == 1)
-        ? "Your shift has started. Please select an activity to begin."
-        : "Your shift has ended. Thank you for your hard work today!";
-    document.getElementById("shiftMessage").textContent = msg;
-
-    // 3. Show modal immediately
-    var myModal = new bootstrap.Modal(document.getElementById('shiftReminderModal'));
-    myModal.show();
-
-    // 4. Send AJAX request in background
-    $.ajax({
-        url: "../../actions/employee/shift-activity.php",
-        type: "POST",
-        data: { 
-            btn_shift: value, 
-            time: time, 
-            ajax: 1 // flag so PHP knows it's AJAX
-        },
-        success: function(response) {
-            // location.reload();
-            // console.log("Backend response:", response);
-        },
-        error: function(xhr, status, error) {
-            console.error("AJAX Error:", error);
-        }
-    });
-}
 
 
 
@@ -85,6 +52,40 @@ function fetchCurrentActivity() {
     } else {
         console.log("Shift is not active, skipping fetch.");
     }
+}
+
+function submitShift(value) {
+    // 1. Get the current time from the <p> element
+    let time = document.getElementById("currentTime").textContent;
+    console.log("time", time); // should now print actual time
+
+    // 2. Set modal message immediately
+    let msg = (value == 1)
+        ? "Your shift has started. Please select an activity to begin."
+        : "Your shift has ended. Thank you for your hard work today!";
+    document.getElementById("shiftMessage").textContent = msg;
+
+    // 3. Show modal immediately
+    var myModal = new bootstrap.Modal(document.getElementById('shiftReminderModal'));
+    myModal.show();
+
+    // 4. Send AJAX request in background
+    $.ajax({
+        url: "../../actions/employee/shift-activity.php",
+        type: "POST",
+        data: { 
+            btn_shift: value, 
+            time: time, 
+            ajax: 1 // flag so PHP knows it's AJAX
+        },
+        success: function(response) {
+            // location.reload();
+            // console.log("Backend response:", response);
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX Error:", error);
+        }
+    });
 }
 
 
