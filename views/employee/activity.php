@@ -24,8 +24,7 @@ include '../shared/view-remark-modal.php';
 $user = new User;
 $employee = new Employee; 
 $isShiftActive = $employee->get_ShiftActive(); // true or false
-$test = $employee->test();
-echo $test;
+
 ?>
 
 <div class="container-fluid mt-auto px-4">

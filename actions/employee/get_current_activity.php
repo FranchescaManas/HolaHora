@@ -5,9 +5,8 @@ include '../../classes/Employee.php';
 $employee = new Employee();
 $result = $employee->get_current_activity();
 
-if ($result->num_rows > 0) {
+if ($result && $result->num_rows > 0) {
     $activity = $result->fetch_assoc();
-    
     echo json_encode([
         'success' => true,
         'activity' => $activity['activity_name'],
@@ -17,7 +16,7 @@ if ($result->num_rows > 0) {
 } else {
     echo json_encode([
         'success' => false,
-        'message' => 'No activity found'
+        'message' => 'No activity found',
     ]);
 }
 ?>

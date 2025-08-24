@@ -228,8 +228,14 @@ class Employee extends Database {
 
         $result = $this->conn->query($sql);
         $row = $result->fetch_assoc();
-        $shift_id = $row['shift_id'];
+        $shift_id = $row['shift_id'] ?? null; // null if no shift
 
+        // If no shift, return empty
+        if (!$shift_id) {
+            return null; // or an empty array depending on your handling
+        }
+
+        // Only query time_entries if shift exists
         $sql = "SELECT te.*, a.activity_name 
                 FROM time_entries te 
                 LEFT JOIN activities a ON te.activity_id = a.activity_id 
@@ -237,7 +243,7 @@ class Employee extends Database {
                 AND te.shift_id = $shift_id
                 ORDER BY te.start_time DESC 
                 LIMIT 1";
-    
+
         if ($result = $this->conn->query($sql)) {
             return $result;
         } else {
