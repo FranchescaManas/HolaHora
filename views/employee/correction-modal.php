@@ -10,16 +10,18 @@
             <div class="row justify-content-evenly mb-4">
                 <div class="col-4  ">
                     <label for="start-time" class="control-label">Activity:</label>
-                    <p>Activity #</p>
+                    <p id="activity">--</p>
                     <label for="start-time" class="control-label">Start Time:</label>
-                    <p>--:-- --</p>
+                    <p id="start-time">--:-- --</p>
                     <label for="end-time" class="control-label">End Time:</label>
-                    <p>--:-- --</p>
+                    <div class="mb-3">
+                        <input type="time" id="end-time" step="1">
+                    </div>
                     <label for="duration" class="control-label">Duration:</label>
-                    <p>--:-- --</p>
+                    <p id="duration">--:-- --</p>
                 </div>
                 <div class="col-8  ">
-                    <textarea name="remarks" id="" class="form-control h-100" placeholder="Add Remarks"></textarea>
+                    <textarea name="remarks" id="remarks" class="form-control h-100" placeholder="Add Remarks"></textarea>
                 </div>
             </div>
             
@@ -42,8 +44,8 @@
             </div>
         </div>
         <div class="modal-footer justify-content-between border-0">
-            <p><u>Request to: {{Manager}}</u></p>
-            <button type="button" class="btn btn-primary" name="btn_save">Save</button>
+            <p><u>Request to: <span id="manager"></span></u></p>
+            <button type="button" class="btn btn-primary" id="save_correction">Save</button>
         </div>
         </div>
     </form>

@@ -59,6 +59,7 @@ $isShiftActive = $employee->get_ShiftActive(); // true or false
                                     <!-- Hidden Input to store the current time -->
                                     <input type="hidden" name="time" id="timeInput">
                                     <button type="submit" class="form-control btn btn-primary mb-2" name="btn_activity" id="activitySelect">Update Activity</button>
+                                    <a href="./correction.php" class="form-control btn btn-warning">Correct Activity</a>
                                 </div>
                                 
                                 <div class="mt-auto">

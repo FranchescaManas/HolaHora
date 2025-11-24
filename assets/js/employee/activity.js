@@ -101,6 +101,7 @@ function set_time_activity() {
 
 /**
  * Updates the displayed time every second.
+ *  TODO:check if time is based on cloud or local
  */
 function updateTime() {
     var now = new Date();

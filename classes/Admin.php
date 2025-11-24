@@ -3,36 +3,6 @@
 require_once "Database.php";
 
 class Admin extends Database {
-    /**
-     * CHECKLIST: 
-     *  DONE: 
-     *      - Add/Delete Activities
-     *      - Edit Activity (name/isBillable)
-     *      - Create Department
-     *      - Create Employee
-     *      - Create Team 
-     *      - Create Manager
-     *      - Dashboard Visualizations
-     *      - Live Activity table
-     *      
-     *
-     *  TODO: 
-     *      
-     *      - Dashboard Filters
-     *      - Dashboard Date range filter
-     *      - Dashboard export data (CSV/Excel)
-     *      - Team management : Filter team table
-     *      - Team Management : Delete Department
-     *      - Dashboard Data Fix
-     *      - Edit Department
-     *      - Edit Manager Details
-     *      - Edit Employee Details
-     *      - Edit Team Details
-     *      
-     * 
-     * TODO: fix chart if activity is less than an hour (chart is empty if data is all less than an hour)
-     */
-
     
     public function create_employee($request){
         // print_r($request);

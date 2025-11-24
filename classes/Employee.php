@@ -193,7 +193,10 @@ class Employee extends Database {
     
 
     public function get_specific_activity($entry_id){
-        $sql = "SELECT * FROM time_entries WHERE `entry_id` = $entry_id";
+        $sql = "SELECT te.*, a.activity_name
+        FROM time_entries te
+        LEFT JOIN activities a ON te.activity_id = a.activity_id
+        WHERE te.entry_id = $entry_id";
 
         if($result = $this->conn->query($sql)){
             return $result;
@@ -237,6 +240,39 @@ class Employee extends Database {
             die("Error retrieving time entry data: " . $this->conn->error);
         }
     }
+
+    public function get_next_activity($user_id, $entry_id){
+        // Get the current activity using your existing function
+        $currentActivityResult = $this->get_specific_activity($entry_id);
+
+        if($currentActivityResult->num_rows == 0){
+            return null; // No current activity found
+        }
+
+        $currentActivity = $currentActivityResult->fetch_assoc();
+        $currentStartTime = $currentActivity['start_time'];
+
+        // Get the next activity for the same user
+        $nextSql = "SELECT te.*, a.activity_name
+                    FROM time_entries te
+                    LEFT JOIN activities a ON te.activity_id = a.activity_id
+                    WHERE te.user_id = $user_id AND te.start_time > '$currentStartTime'
+                    ORDER BY te.start_time ASC
+                    LIMIT 1";
+
+        $nextResult = $this->conn->query($nextSql);
+
+        if($nextResult && $nextResult->num_rows > 0){
+            return $nextResult->fetch_assoc();
+        }
+
+        return null; // No next activity
+    }
+
+    
+
+
+
     public function get_ShiftActive() {
         $employee_id = $_SESSION['user_id'];
 
@@ -274,6 +310,55 @@ class Employee extends Database {
         if (!$result) {
             die("Error updating remark: " . $this->conn->error);
         } else {
+            return true;
+        }
+    }
+
+
+    public function get_manager(){
+        session_start();
+        $user_id = $_SESSION['user_id'];
+        $sql = "SELECT 
+                    t.team_id,
+                    t.team_name,
+                    CONCAT(u.firstname, ' ', u.lastname) AS name
+                FROM 
+                    teams t
+                LEFT JOIN users u ON t.user_id = u.user_id
+                LEFT JOIN employees e ON t.team_id = e.team_id
+                WHERE e.user_id = $user_id
+                LIMIT 1;"; // optional if you only need one manager
+
+        $result = $this->conn->query($sql);
+
+        if (!$result) {
+            die("Error getting manager details: " . $this->conn->error);
+        } else {
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                return $row['name']; // return the manager's name
+            } else {
+                return null; // no manager found
+            }
+        }        
+    }
+
+    public function create_correction_request($request){
+        $user_id = $request['user_id'];
+        $end_time = $request['end_time'];
+        $request_date = $request['requested_date'];
+        $remarks = $request['remarks'];
+        $entry_id = $request['entry_id'];
+
+
+        // Insert a new shift record
+        $sql = "INSERT INTO time_adjustment_requests (`employee_id`, `request_date`, `end_time`, `remarks`, `entry_id`) 
+                VALUES ($user_id, '$request_date', '$end_time', '$remarks', $entry_id)";
+        $insert_result = $this->conn->query($sql);
+
+        if (!$insert_result) {
+            die("Error starting shift: " . $this->conn->error);
+        }else{
             return true;
         }
     }
