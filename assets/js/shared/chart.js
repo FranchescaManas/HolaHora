@@ -1,11 +1,11 @@
 google.charts.load('current', { packages: ['corechart'] });
 google.charts.setOnLoadCallback(drawChart);
 
-function drawChart() {
+function drawChart()  {
     fetch('../../actions/user/get_activity_data.php')
         .then(response => response.json())
         .then(data => {
-            console.log("Fetched Data:", data);
+            // console.log("Fetched Data:", data);
 
             data.unshift(['Activity', 'Total Hours']);
 
@@ -42,4 +42,8 @@ function drawChart() {
         })
         .catch(error => console.error('Error loading data:', response.json()));
 }
+
+
+
+
 

@@ -1,24 +1,26 @@
 <?php
-include "../../classes/Employee.php";
+include "../../classes/Manager.php";
 
 if (isset($_GET['entry_id'])) {
-    $employee = new Employee();
+    $manager = new Manager();
     $entry_id = $_GET['entry_id'];
-    $result = $employee->get_specific_activity($entry_id);
-    $manager_details = $employee->get_manager();
+    $result = $manager->get_specific_activity($entry_id);
+    
 
     if ($result->num_rows > 0) {
         $activity = $result->fetch_assoc();
         echo json_encode([
             'success' => true,
-            'activity_name' => $activity['activity_name'],
-            'activity_id' => $activity['activity_id'],
+            'initial_start_time' => $activity['initial_start_time'],
             'start_time' => $activity['start_time'],
-            'end_time' => $activity['end_time'],
+            'requested_start_time' => $activity['requested_start_time'],
+            'name' => $activity['employee_name'],
             'duration' => $activity['duration'],
+            'request_id' => $activity['request_id'],
+            'activity_name' => $activity['activity_name'],
+            'end_time' => $activity['initial_end_time'],
             'remarks' => $activity['remarks'],
-            'manager' => $manager_details['name'],
-            'manager_id' => $manager_details['manager_id']
+            'requested_end_time' => $activity['requested_end_time'],
         ]);
     } else {
         echo json_encode(['success' => false, 'message' => 'No activity found']);

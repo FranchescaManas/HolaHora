@@ -1,6 +1,30 @@
 $(document).ready(function () {
+    $('#dashboardFilter').on('submit', function (e) {
+        e.preventDefault();
+        $.ajax({
+        url: '../../actions/user/filter-dashboard.php',
+        type: 'POST',
+        dataType: 'json',
+        data: $(this).serialize(), // POST
+        success: function (res) {
+            $('#activity-table-body').html(res.rows);
+            $('#hours-table-head').html(res.hours_head);
+            $('#hours-table-body').html(res.hours_body);
+        }
+        //how to refresh the chart after filtering? I need to call drawChart() again but it's in another file
+         // Call the chart function to refresh it
+    });
+    });
+
+    $('#exportCsv').on('click', function () {
+        const query = $('#dashboardFilter').serialize();
+
+        window.location.href =
+            '../../actions/user/export-dashboard-csv.php?' + query;
+    });
+
+
     $(".view-remark-btn").click(function () {
-        console.log("Button Clicked!"); // Debugging log
         let entryId = $(this).data("entry-id");
         $("#entry_id").val(entryId); // Store entry_id in hidden input
 
@@ -56,4 +80,8 @@ $(document).ready(function () {
             }
         });
     });
+
+
+
+
 });

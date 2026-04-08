@@ -10,12 +10,14 @@
             <div class="row justify-content-evenly mb-4">
                 <div class="col-4  ">
                     <label for="start-time" class="control-label">Activity:</label>
-                    <p id="activity">--</p>
+                    <p class="activity" id="activity_id">--</p>
                     <label for="start-time" class="control-label">Start Time:</label>
-                    <p id="start-time">--:-- --</p>
+                    <p id="start-time-text">--:--</p>
+                    <input type="time" id="start-time-input" class="d-flex d-none mb-3">
+
                     <label for="end-time" class="control-label">End Time:</label>
                     <div class="mb-3">
-                        <input type="time" id="end-time" step="1">
+                    <input type="time" id="end-time" step="1">
                     </div>
                     <label for="duration" class="control-label">Duration:</label>
                     <p id="duration">--:-- --</p>
@@ -44,7 +46,7 @@
             </div>
         </div>
         <div class="modal-footer justify-content-between border-0">
-            <p><u>Request to: <span id="manager"></span></u></p>
+            <p><u>Request to: <span class="manager" id="manager_id"></span></u></p>
             <button type="button" class="btn btn-primary" id="save_correction">Save</button>
         </div>
         </div>

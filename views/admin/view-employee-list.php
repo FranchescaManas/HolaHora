@@ -54,61 +54,7 @@ session_start();
    <div class="container h-75 w-75 ">
       
          
-         <div class="row justify-content-end mb-2">
-            <button class="btn btn-primary w-auto ms-2" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">Create Employee</button>
-            <div class="dropdown w-auto px-0 ms-2">
-               <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-                  <i class="fa-solid fa-filter"></i>
-               </button>
-               <form class="dropdown-menu p-4">
-                  <div class="mb-3">
-                     <label for="exampleDropdownFormEmail2" class="form-label">Status</label>
-                     <select name="team_filter" id="" class="form-select">
-                        <option value="" hidden>Select Status</option>
-                        <option value="" >Active</option>
-                        <option value="" >Inactive</option>
-                     </select>
-                  </div>
-                  <div class="mb-3">
-                     <label for="exampleDropdownFormEmail2" class="form-label">Position</label>
-                     <select name="team_filter" id="" class="form-select">
-                        <option value="" hidden>Select Position</option>
-                        <?php
-                          $positions = [];
-                           foreach ($employees as $row): 
-                              if (!in_array($row['position'], $positions)) {
-                                    $positions[] = $row['position'];
-                           ?>
-                              <option value="<?= $row['position'] ?>"><?= $row['Position'] ?></option>
-                           <?php 
-                              } 
-                           endforeach; 
-                           ?>
-                        
-                     </select>
-                  </div>
-                  <div class="mb-3">
-                     <label for="exampleDropdownFormEmail2" class="form-label">Team</label>
-                     <select name="team_filter" id="" class="form-select">
-                        <option value="" hidden>Select Team</option>
-                        <?php
-                        $teams = [];
-                           foreach ($employees as $row): 
-                              if (!in_array($row['team'], $teams)) {
-                                    $teams[] = $row['team'];
-                           ?>
-                              <option value="<?= $row['team'] ?>"><?= $row['team'] ?></option>
-                           <?php 
-                              } 
-                           endforeach; 
-                           ?>
-                     </select>
-                  </div>
-                  <button type="submit" class="btn btn-primary">Save</button>
-               </form>
-            </div>
-         </div>
-
+         
          <div class="row">
             <table class="table table-hover table-striped">
                <thead class="table-dark">

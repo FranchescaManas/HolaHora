@@ -141,7 +141,12 @@ class Employee extends Database {
         $this->conn->query($insert_sql);
     
         // Redirect after success
-        header("location: ../../views/employee/activity.php");
+        // header("location: ../../views/employee/activity.php");
+        if ($this->conn->affected_rows > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
     
      
@@ -193,7 +198,7 @@ class Employee extends Database {
     
 
     public function get_specific_activity($entry_id){
-        $sql = "SELECT te.*, a.activity_name
+        $sql = "SELECT te.*, a.activity_name, a.activity_id
         FROM time_entries te
         LEFT JOIN activities a ON te.activity_id = a.activity_id
         WHERE te.entry_id = $entry_id";
@@ -321,7 +326,8 @@ class Employee extends Database {
         $sql = "SELECT 
                     t.team_id,
                     t.team_name,
-                    CONCAT(u.firstname, ' ', u.lastname) AS name
+                    CONCAT(u.firstname, ' ', u.lastname) AS name,
+                    t.user_id as manager_id
                 FROM 
                     teams t
                 LEFT JOIN users u ON t.user_id = u.user_id
@@ -336,32 +342,240 @@ class Employee extends Database {
         } else {
             if ($result->num_rows > 0) {
                 $row = $result->fetch_assoc();
-                return $row['name']; // return the manager's name
+                return $row; // return the manager's name
             } else {
                 return null; // no manager found
             }
         }        
     }
+    public function validate_shift_bounds_for_entry(
+        int $entry_id,
+        ?string $new_start_time,
+        ?string $new_end_time
+    ) {
 
-    public function create_correction_request($request){
-        $user_id = $request['user_id'];
-        $end_time = $request['end_time'];
+        // 1️⃣ Load entry context
+        $sql = "
+            SELECT entry_id, employee_id, date, start_time, shift_id
+            FROM time_entries
+            WHERE entry_id = $entry_id
+            LIMIT 1
+        ";
+
+        $res = $this->conn->query($sql);
+        if (!$res || $res->num_rows === 0) {
+            return [false, "Entry not found"];
+        }
+
+
+        $entry = $res->fetch_assoc();
+
+       
+
+        $employee_id = $entry['employee_id'];
+        $shift_id = $entry['shift_id'];
+        $date = $entry['date'];
+
+        // 2️⃣ Load shift bounds
+        $shift_sql = "
+            SELECT shift_start, shift_end
+            FROM shifts
+            WHERE employee_id = $employee_id
+            AND shift_id = '$shift_id'
+            LIMIT 1
+        ";
+
+        $shift_res = $this->conn->query($shift_sql);
+        if (!$shift_res || $shift_res->num_rows === 0) {
+            return [false, "Shift not found"];
+        }
+
+        $shift = $shift_res->fetch_assoc();
+
+
+        $shift_start_dt = strtotime("$date {$shift['shift_start']}");
+        $shift_end_dt   = strtotime("$date {$shift['shift_end']}");
+
+        // 3️⃣ Detect FIRST entry of the day
+        $first_sql = "
+            SELECT entry_id
+            FROM time_entries
+            WHERE employee_id = $employee_id
+            AND date = '$date'
+            ORDER BY start_time ASC
+            LIMIT 1
+        ";
+
+        $first = $this->conn->query($first_sql)->fetch_assoc();
+        $isFirst = ($first && $first['entry_id'] == $entry_id);
+
+        // 4️⃣ Detect LAST entry of the day
+        $last_sql = "
+            SELECT entry_id
+            FROM time_entries
+            WHERE employee_id = $employee_id
+            AND date = '$date'
+            ORDER BY start_time DESC
+            LIMIT 1
+        ";
+
+        $last = $this->conn->query($last_sql)->fetch_assoc();
+        $isLast = ($last && $last['entry_id'] == $entry_id);
+
+        // ================================
+        // RULE 1: FIRST entry start bound
+        // ================================
+        if ($isFirst && $new_start_time !== null) {
+
+            $new_start_dt = strtotime("$date $new_start_time");
+
+            if ($new_start_dt < $shift_start_dt) {
+                return [false, "Start time cannot be earlier than shift start"];
+            }
+        }
+
+
+        // =================================
+        // RULE 2: LAST entry end bound
+        // =================================
+        if ($isLast && $new_end_time !== null) {
+
+            // shift must already have ended
+            if (time() < $shift_end_dt) {
+                return [false, "Cannot edit last entry before shift ends"];
+            }
+
+            $new_end_dt = strtotime("$date $new_end_time");
+
+            if ($new_end_dt > $shift_end_dt) {
+                return [false, "End time cannot exceed shift end"];
+            }
+        }
+
+        return [true, null];
+    }
+
+    public function create_correction_request($request)
+    {
+        $user_id      = $request['user_id'];
+        $end_time     = $request['end_time'] ?? null;
         $request_date = $request['requested_date'];
-        $remarks = $request['remarks'];
-        $entry_id = $request['entry_id'];
+        $remarks      = $request['remarks'];
+        $entry_id     = $request['entry_id'];
+        $manager_id   = $request['manager_id'];
+        $activity_id  = $request['activity_id'];
+        $start_time   = $request['start_time'] ?? null;
+
+        // normalize empty string → null
+        if ($start_time === '') {
+            $start_time = null;
+        }
+
+        // 🔹 BACKEND VALIDATION
+        $validation = $this->validate_shift_bounds_for_entry(
+            $entry_id,
+            $start_time,
+            $end_time
+        ); 
+        
+        // return json_encode($validation[0]);
+
+        if (!$validation[0]) {
+            return json_encode([
+                "status" => "error",
+                "message" => $validation[1]
+            ]);
+        }
 
 
-        // Insert a new shift record
-        $sql = "INSERT INTO time_adjustment_requests (`employee_id`, `request_date`, `end_time`, `remarks`, `entry_id`) 
-                VALUES ($user_id, '$request_date', '$end_time', '$remarks', $entry_id)";
+        // 🔹 Get current entry times
+        $sql = "SELECT start_time, end_time FROM time_entries WHERE entry_id = $entry_id";
+        $result = $this->conn->query($sql);
+        $previous_data = $result->fetch_assoc();
+
+        $initial_start_time = $previous_data['start_time'];
+        $initial_end_time   = $previous_data['end_time'];
+
+        // 🔹 Build INSERT dynamically
+        $columns = [
+            "employee_id",
+            "request_date",
+            "end_time",
+            "remarks",
+            "entry_id",
+            "manager_id",
+            "activity_id",
+            "initial_end_time"
+        ];
+
+        $values = [
+            $user_id,
+            "'$request_date'",
+            $end_time ? "'$end_time'" : "NULL",
+            "'$remarks'",
+            $entry_id,
+            $manager_id,
+            $activity_id,
+            "'$initial_end_time'"
+        ];
+
+        // 🔹 Add start fields ONLY if provided
+        if ($start_time !== null) {
+            $columns[] = "start_time";
+            $columns[] = "initial_start_time";
+
+            $values[] = "'$start_time'";
+            $values[] = "'$initial_start_time'";
+        }
+
+        $sql = "INSERT INTO time_adjustment_requests (" .
+            implode(", ", $columns) .
+            ") VALUES (" .
+            implode(", ", $values) .
+            ")";
+
         $insert_result = $this->conn->query($sql);
 
         if (!$insert_result) {
-            die("Error starting shift: " . $this->conn->error);
-        }else{
-            return true;
+            die("Error creating request: " . $this->conn->error);
         }
+
+        return json_encode([
+            "status" => "success",
+            "message" => "Correction request created successfully"
+        ]);
     }
+
+    // public function create_correction_request($request){
+    //     $user_id = $request['user_id'];
+    //     $end_time = $request['end_time'];
+    //     $request_date = $request['requested_date'];
+    //     $remarks = $request['remarks'];
+    //     $entry_id = $request['entry_id'];
+    //     $manager_id = $request['manager_id'];
+    //     $activity_id = $request['activity_id'];
+    //     $start_time = $request['start-time-input'] ?? null;
+    
+
+    //     $sql = "SELECT end_time FROM time_entries WHERE entry_id = $entry_id";
+
+    //     $result= $this->conn->query($sql);
+    //     $previous_data = $result->fetch_assoc();
+    //     $initial_end_time = $previous_data['end_time'];
+
+    //     // Insert a new shift record
+    //     $sql = "INSERT INTO time_adjustment_requests (`employee_id`, `request_date`, `end_time`, `remarks`, `entry_id`, `manager_id`,`activity_id`, `initial_end_time`) 
+    //             VALUES ($user_id, '$request_date', '$end_time', '$remarks', $entry_id, $manager_id, $activity_id, '$initial_end_time')";
+    //     $insert_result = $this->conn->query($sql);
+
+    //     if (!$insert_result) {
+    //         die("Error creating request: " . $sql);
+    //     }else{
+    //         return true;
+    //     }
+    // }
+
+
     
     
     

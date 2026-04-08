@@ -35,6 +35,9 @@ $role = $_SESSION['role'];
             <li class="nav-item">
               <a class="nav-link" href="../manager/team-management.php">My Employees</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="../manager/correction.php">Corrections</a>
+            </li>
           <?php elseif ($role == 'E'): ?>
             <li class="nav-item">
               <a class="nav-link" href="../employee/activity.php">Activity Tracker</a>

@@ -27,56 +27,65 @@ class Admin extends Database {
 
             if($this->conn->query($sql)){
                 // Get the previous page URL
-                $prevPage = $_SERVER['HTTP_REFERER'];
+                // $prevPage = $_SERVER['HTTP_REFERER'];
 
                 // // Redirect to the previous page
-                header("Location: $prevPage");
-                exit;
+                // header("Location: $prevPage");
+                // exit;
+                return [true, "Employee created successfully"];
+                
             }else{
-                die("Error Registering Employee: " . $this->conn->error);
+                $err_message = "Error creating employee: " . $this->conn->error;
+                die($err_message);
+                return [false, $err_message];
 
             }
         }else{
-            die("Error Registering Employee: " . $this->conn->error);
+            $err_message = "Error creating employee: " . $this->conn->error;
+            die($err_message);
+            return [false, $err_message];
         }
     }
 
     public function create_manager($request) {
-        // Extract and sanitize input
+
         $username = $request['username'];
         $password = password_hash($request['password'], PASSWORD_DEFAULT);
         $firstname = $request['firstname'];
         $lastname = $request['lastname'];
-        $email = $request['email']; // Fix: Use email instead of lastname
+        $email = $request['email'];
         $contact_no = $request['contact'];
-        
-        // Check if team_id and department_id are set and not empty
-        $team_id = isset($request['team']) && !empty($request['team']) ? (int) $request['team'] : null;
-        $department_id = isset($request['department']) && !empty($request['department']) ? (int) $request['department'] : null;
-    
-        // Insert user into the users table
-        $sql = "INSERT INTO users (`username`, `firstname`, `lastname`, `email`, `contact_no`, `password`, `role`, `status`, `admin_level`, `online`) 
-                VALUES ('$username', '$firstname', '$lastname', '$email', '$contact_no', '$password', 'M', 'Active', 1, 0)";
-    
-        if ($this->conn->query($sql)) {
-            $user_id = $this->conn->insert_id; // Get the newly inserted user ID
-    
-            // Only insert into teams if team_id or department_id is provided
-            if ($team_id !== null && $department_id !== null) {
-                $sql_team = "INSERT INTO teams (`user_id`, `team_id`, `department_id`) 
-                             VALUES ($user_id, " . ($team_id ?? 'NULL') . ", " . ($department_id ?? 'NULL') . ")";
-                
-                if (!$this->conn->query($sql_team)) {
-                    die("Error assigning Manager to a team: " . $this->conn->error);
-                }
-            }
-    
-            // Redirect on success
-            header("location: ../../views/admin/team-management.php");
-            exit;
-        } else {
-            die("Error Registering Employee: " . $this->conn->error);
+
+        $team_id = !empty($request['team']) ? (int)$request['team'] : null;
+        $department_id = !empty($request['department']) ? (int)$request['department'] : null;
+
+        $sql = "INSERT INTO users 
+            (`username`,`firstname`,`lastname`,`email`,`contact_no`,`password`,`role`,`status`,`admin_level`,`online`) 
+            VALUES 
+            ('$username','$firstname','$lastname','$email','$contact_no','$password','M','Active',1,0)";
+
+        if (!$this->conn->query($sql)) {
+            return [false, "Error creating manager: " . $this->conn->error];
         }
+
+        $user_id = $this->conn->insert_id;
+
+        if ($team_id && $department_id) {
+
+            $sql_team = "INSERT INTO teams (`user_id`,`team_id`,`department_id`) 
+                        VALUES ($user_id,$team_id,$department_id)";
+
+            if (!$this->conn->query($sql_team)) {
+                return [false, "Manager created but team assignment failed"];
+            }
+           
+        }
+
+        return [true, "Manager created successfully"];
+        
+        // header("Location: ../../views/admin/team-management.php");
+        // exit;
+        
     }
     
 
@@ -111,38 +120,42 @@ class Admin extends Database {
         $department_id = !empty($request['department']) ? $request['department'] : "NULL";
         $manager_id = !empty($request['manager']) ? $request['manager'] : "NULL";
 
-        $employees = array_filter($request['employees']); // This is already an array
-        
+        $employees = array_filter($request['employees']);
+        $employees = explode(',', $employees[0]);
         // Insert new team and get the inserted team's ID
         $sql = "INSERT INTO teams (`user_id`, `department_id`, `team_name`, `status`) 
         VALUES (" . ($manager_id === "NULL" ? "NULL" : $manager_id) . ", 
                 " . ($department_id === "NULL" ? "NULL" : $department_id) . ", 
                 '$team_name', 
                 '$status')";
-    
+
+        // // return $sql;
         if ($this->conn->query($sql)) {
             $team_id = $this->conn->insert_id; // Get last inserted ID
             
-            // Now, update employees to assign them to this team
-           
+        //     // Now, update employees to assign them to this team
             if(!empty($employees)){
+               
                 foreach ($employees as $employee_id) {
-                    $update_sql = "UPDATE employees SET `team_id` = $team_id WHERE `user_id` = $employee_id";
-                    // echo "$update_sql";
+                    
+                    $update_sql = "UPDATE employees SET team_id = $team_id WHERE `user_id` = $employee_id";
                     if($this->conn->query($update_sql)){
                         // echo "added";
-                        header("location: ../../views/admin/team-management.php");
+                        // header("location: ../../views/admin/team-management.php"); //todo: find out what this does and why it redirects
+                        continue;
                     }else{
-                        die("erorr:". $this->conn->error );
+                        die("erorr:". $this->conn->error ); 
+                        return [false, "Error creating team: " . $this->conn->error];
                     }
                 }
+                return [true, "Team created successfully!"];
+            }else
+            {
+                return [false, "Team cannot be created without employees."];
             }
-    
-            // Redirect after successful creation
-            header("location: ../../views/admin/team-management.php");
-            exit;
         } else {
             die("Error creating team: " . $this->conn->error);
+            return [false, "Error creating team: " . $this->conn->error];
         }
     }
     

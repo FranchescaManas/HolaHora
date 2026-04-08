@@ -39,6 +39,7 @@ session_start();
                     <tbody>
                     <?php
                         $activities = $class->get_live_activities();
+                        // print_r($activities->fetch_assoc());
                         while ($row = $activities->fetch_assoc()) {
                             echo "<tr>
                                     <td>{$row['name']}</td>
@@ -46,7 +47,7 @@ session_start();
                                     <td>{$row['team_name']}</td>
                                     <td>{$row['department_name']}</td>
                                     <td>{$row['position']}</td>
-                                    <td>{$row['duration']} min</td>
+                                    <td>{$row['duration']}</td>
                                 </tr>";
                         }
                         ?>

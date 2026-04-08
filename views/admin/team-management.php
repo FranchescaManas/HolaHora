@@ -66,7 +66,7 @@ include 'create-employee-modal.php';
         </button>
       
 
-        <div class="dropdown w-auto px-0 ms-2">
+        <!-- <div class="dropdown w-auto px-0 ms-2">
                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                   <i class="fa-solid fa-filter"></i>
                </button>
@@ -84,14 +84,12 @@ include 'create-employee-modal.php';
                      <label for="exampleDropdownFormEmail2" class="form-label">Team</label>
                      <select name="team_filter" id="" class="form-select">
                         <option value="" hidden>Select Team</option>
-                        <?php foreach ($teams as $team) { ?>
-                                <option value="<?= $team['team_id'] ?>"><?= $team['team_name'] ?></option>
-                        <?php } ?>
+                        // Loop through teams and create options
                      </select>
                   </div>
                   <button type="submit" class="btn btn-primary">Save</button>
                </form>
-            </div>
+        </div> -->
     </div>
 
     <div class="row flex-grow-1 overflow-auto">

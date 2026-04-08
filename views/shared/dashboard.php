@@ -22,9 +22,11 @@ include "view-remark-modal.php";
 
 ?>
 <!-- TODO: MANAGER CANT SEE ANYTHING WITH DATA LESS THAN AN HOUR -->
-<div class="container-fluid w-75 px-3" style="height:80vh">
+<div class="container-fluid w-100 px-5" style="height:80vh">
+    
     
     <div class="row justify-content-evenly h-100 border">
+        
         <div class="col-5 border-end">
             
             <?php
@@ -41,21 +43,20 @@ include "view-remark-modal.php";
 
         $activity_hours = $user->get_activity_hours();
         $activities = $user->get_activity_dashboard();
-        
         ?>
         <div class="col-7 h-100 d-flex flex-column">
             <div class="row flex-shrink-0">
 
                 <table class="table table-striped table-hover mb-3">
                     <thead class="table-dark">
-                        <tr>
+                        <tr id="hours-table-head">
                             <th>Activity</th>
                             <?php foreach ($activity_hours as $activity) { ?>
                                 <th><?= htmlspecialchars($activity[0]) ?></th> <!-- Activity Name -->
                             <?php } ?>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="hours-table-body">
                         <tr>
                             <td>Hours</td>
                             <?php foreach ($activity_hours as $activity) { ?>
@@ -68,8 +69,10 @@ include "view-remark-modal.php";
 
             <div class="row flex-grow-1 overflow-auto">
                                 
-                <table class="table table-striped table-hover mb-0" >
+                <table  class="table table-striped table-hover mb-0" >
                     <thead class="table-dark">
+                        <th>Name </th>
+                        <th>Team </th>
                         <th>Activity </th>
                         <th>Date </th>
                         <th>Start Time</th>
@@ -77,11 +80,13 @@ include "view-remark-modal.php";
                         <th>Duration</th>
                         <th></th>
                     </thead>
-                    <tbody>
+                    <tbody id="activity-table-body">
                         <?php
                         if ($activities) { ?>
                             <?php while ($log = $activities->fetch_assoc()) { ?>
                                 <tr>
+                                    <td><?= $log['name'] ?></td>
+                                    <td><?= $log['team_name'] ?></td>
                                     <td><?= $log['activity_name'] ?></td>
                                     <td><?= $log['date'] ?></td>
                                     <td><?= $log['start_time'] ?></td>

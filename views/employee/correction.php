@@ -1,5 +1,6 @@
 <?php
 session_start();
+$role = $_SESSION['role'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,11 +15,13 @@ session_start();
 <body style="height: 85vh">
     <?php
     include "../shared/main-nav.php";
-    include '../../classes/Employee.php';
     include "correction-modal.php";
+    include '../../classes/Employee.php';
     $employee = new Employee; 
     $activities = $employee->get_activities();
+    $isShiftActive = $employee->get_ShiftActive(); // true or false
     ?>
+    <p class="d-none" id="shift"><?= $isShiftActive?></p>
 
     <div class="d-flex align-items-start flex-column p-4 h-100">
         <h1 class="display-5 mb-3">Activity Correction</h1>
@@ -31,7 +34,7 @@ session_start();
                 <th>Duration</th>
                 <th></th>
             </thead>
-            <tbody>
+            <tbody id="activity-tbody">
                <?php
                if ($activities) { ?>
                 <?php while ($log = $activities->fetch_assoc()) { 
@@ -46,7 +49,7 @@ session_start();
                     <td><?= $log['end_time'] ?></td>
                     <td><?= $log['duration'] ?></td>
                     <td>
-                        <input type="radio" name="correction_row" id="entry_id" value="<?= $log['entry_id'] ?>">
+                        <input type="radio" name="correction_row" id="entry_id" data-entry="<?= $log['entry_id'] ?>">
                     </td>
                 </tr>
                 
@@ -63,6 +66,6 @@ session_start();
         <input type="submit" id="correct_btn" value="Correct Acivity" class="btn btn-primary w-100 mt-auto">
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="../../assets/js/shared/correction-modal.js"></script>
+    <script src="../../assets/js/employee/correction-modal.js"></script>
 </body>
 </html>
